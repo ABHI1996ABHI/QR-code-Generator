@@ -32,7 +32,6 @@ body {
     color: rgb(255, 255, 255) !important;
     display: inline-block;
     line-height: 14px;
-    
     text-decoration: none;
     padding: 15px 30px;
     font-weight: bold;
@@ -91,7 +90,7 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   padding: 30px;
-  max-width: 500px;
+  max-width: 900px;
   width: 100%;
   margin: 20px;
   animation: fadeIn 1s ease-in-out;
