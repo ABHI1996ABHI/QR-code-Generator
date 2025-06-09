@@ -53,22 +53,35 @@
       <path d="M0,120 C200,200 400,0 600,120 C800,240 1000,40 1200,120 L1200,200 L0,200 Z" fill="#adbbda"/>
     </svg>
 
-    <section id="main">
-      <div class="mb-4">
-        <input type="text" id="urlInput" class="form-control" placeholder="Enter URL here">
+    <!-- index.html -->
+…
+  <section id="main">
+    <div class="row">
+      <!-- Left column: all controls -->
+      <div class="col-md-4 d-flex flex-column">
+        <div class="mb-4">
+          <input type="text" id="urlInput" class="form-control" placeholder="Enter URL here">
+        </div>
+        <div class="d-grid gap-2 mb-4">
+          <a class="btn gen-btn" onclick="generateQR()">Generate QR Code</a>
+        </div>
+        <div class="d-grid gap-2 mt-4">
+          <select class="form-select mb-2" id="formatSelect">
+            <option value="png">PNG</option>
+            <option value="jpeg">JPG</option>
+          </select>
+          <a class="btn gen-btn" onclick="downloadQR()">Download QR Code</a>
+        </div>
       </div>
-      <div class="d-grid gap-2 mb-4">
-        <a class="btn gen-btn" onclick="generateQR()">Generate QR Code</a>
+
+      <!-- Right column: QR output -->
+      <div class="col-md-8 d-flex justify-content-center align-items-center">
+        <div id="qrcode"></div>
       </div>
-      <div id="qrcode"></div>
-      <div class="d-grid gap-2 mt-4">
-        <select class="form-select mb-2" id="formatSelect">
-          <option value="png">PNG</option>
-          <option value="jpeg">JPG</option>
-        </select>
-        <a class="btn gen-btn" onclick="downloadQR()">Download QR Code</a>
-      </div>
-    </section>
+    </div>
+  </section>
+…
+
   </div>
 
   <!-- Loader Modal -->
