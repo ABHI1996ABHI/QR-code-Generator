@@ -1,24 +1,110 @@
-let currentQR; // Global reference to the QRCode instance
-let currentURL = ''; // Store URL for SVG rendering
+const qrInputs = document.getElementById('qrInputs');
+let currentType = 'url'; // default
 
+// Tab click handling
+document.querySelectorAll('#qrTypeTabs .nav-link').forEach(tab => {
+  tab.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelectorAll('#qrTypeTabs .nav-link').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    currentType = this.dataset.type;
+    renderInputs(currentType);
+  });
+});
+
+// Input renderer
+function renderInputs(type) {
+  let html = '';
+  switch (type) {
+    case 'url':
+      html = `<input type="text" id="urlInput" class="form-control mb-3" placeholder="Enter URL here">`;
+      break;
+    case 'email':
+      html = `
+        <input type="email" id="emailInput" class="form-control mb-2" placeholder="Enter email">
+        <input type="text" id="subjectInput" class="form-control mb-2" placeholder="Subject">
+        <textarea id="bodyInput" class="form-control mb-2" placeholder="Message"></textarea>`;
+      break;
+    case 'phone':
+      html = `<input type="tel" id="phoneInput" class="form-control mb-3" placeholder="Enter phone number">`;
+      break;
+    case 'sms':
+      html = `
+        <input type="tel" id="smsPhoneInput" class="form-control mb-2" placeholder="Enter phone number">
+        <textarea id="smsBodyInput" class="form-control mb-2" placeholder="Message"></textarea>`;
+      break;
+    case 'wifi':
+      html = `
+        <input type="text" id="ssidInput" class="form-control mb-2" placeholder="SSID">
+        <input type="password" id="passwordInput" class="form-control mb-2" placeholder="Password">
+        <select id="encryptionInput" class="form-select mb-2">
+          <option value="WPA">WPA/WPA2</option>
+          <option value="WEP">WEP</option>
+          <option value="nopass">No Password</option>
+        </select>`;
+      break;
+      case 'pdf':
+        html = `
+          <input type="file" id="pdfInput" class="form-control mb-3" accept="application/pdf">
+          <small class="text-muted">Select a PDF file to generate QR Code.</small>
+        `;
+        break;
+        
+  }
+  qrInputs.innerHTML = html;
+}
+
+// Extend QR logic
 function generateQR() {
-  const url = document.getElementById('urlInput').value.trim();
-  const qrCodeContainer = document.getElementById('qrcode');
+  let qrText = '';
+  switch (currentType) {
+    case 'url':
+      qrText = document.getElementById('urlInput').value.trim();
+      break;
+    case 'email':
+      const email = document.getElementById('emailInput').value.trim();
+      const subject = encodeURIComponent(document.getElementById('subjectInput').value.trim());
+      const body = encodeURIComponent(document.getElementById('bodyInput').value.trim());
+      qrText = `mailto:${email}?subject=${subject}&body=${body}`;
+      break;
+    case 'phone':
+      qrText = `tel:${document.getElementById('phoneInput').value.trim()}`;
+      break;
+    case 'sms':
+      const phone = document.getElementById('smsPhoneInput').value.trim();
+      const message = encodeURIComponent(document.getElementById('smsBodyInput').value.trim());
+      qrText = `SMSTO:${phone}:${message}`;
+      break;
+    case 'wifi':
+      const ssid = document.getElementById('ssidInput').value.trim();
+      const password = document.getElementById('passwordInput').value.trim();
+      const enc = document.getElementById('encryptionInput').value;
+      qrText = `WIFI:T:${enc};S:${ssid};P:${password};;`;
+      break;
 
-  if (!url) {
-    alert("Please enter a valid URL.");
-    return;
+      case 'pdf':
+  const pdfFile = document.getElementById('pdfInput').files[0];
+  if (!pdfFile) return alert("Please upload a PDF file.");
+  
+  const pdfUrl = URL.createObjectURL(pdfFile); // creates a temporary link to the file
+  qrText = pdfUrl;
+  break;
+
+      
   }
 
-  qrCodeContainer.innerHTML = "";
-  currentURL = url; // Store current URL for SVG
+  if (!qrText) return alert("Please fill in the required fields!");
+
+  const qrCodeContainer = document.getElementById('qrcode');
+  qrCodeContainer.innerHTML = '';
+  currentURL = qrText;
 
   const loaderModal = new bootstrap.Modal(document.getElementById('loaderModal'));
   loaderModal.show();
 
   setTimeout(() => {
     currentQR = new QRCode(qrCodeContainer, {
-      text: url,
+      text: qrText,
       width: 250,
       height: 250,
       colorDark: "#000000",
@@ -29,70 +115,5 @@ function generateQR() {
   }, 1000);
 }
 
-function downloadQR() {
-  const format = document.getElementById('formatSelect').value;
-  const qrCodeImage = document.querySelector('#qrcode img') || document.querySelector('#qrcode canvas');
-
-  if (!qrCodeImage) {
-    alert("Please generate a QR code first.");
-    return;
-  }
-
-  if (format === 'svg') {
-    // Use third-party lib for SVG if using qrcodejs (doesn’t support SVG natively)
-    const svgNS = "http://www.w3.org/2000/svg";
-    const svg = document.createElementNS(svgNS, "svg");
-    svg.setAttribute("width", "250");
-    svg.setAttribute("height", "250");
-    svg.setAttribute("viewBox", "0 0 250 250");
-
-    const qrCanvas = document.querySelector('#qrcode canvas');
-    const ctx = qrCanvas.getContext('2d');
-    const imageData = ctx.getImageData(0, 0, qrCanvas.width, qrCanvas.height).data;
-
-    for (let y = 0; y < qrCanvas.height; y++) {
-      for (let x = 0; x < qrCanvas.width; x++) {
-        const i = (y * qrCanvas.width + x) * 4;
-        const isBlack = imageData[i] === 0;
-
-        if (isBlack) {
-          const rect = document.createElementNS(svgNS, 'rect');
-          rect.setAttribute('x', x);
-          rect.setAttribute('y', y);
-          rect.setAttribute('width', 1);
-          rect.setAttribute('height', 1);
-          rect.setAttribute('fill', '#000');
-          svg.appendChild(rect);
-        }
-      }
-    }
-
-    const svgBlob = new Blob([svg.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(svgBlob);
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'qrcode.svg';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-  } else {
-    // For PNG and JPG
-    const padding = 20;
-    const canvas = document.createElement('canvas');
-    canvas.width = qrCodeImage.width + padding * 2;
-    canvas.height = qrCodeImage.height + padding * 2;
-
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(qrCodeImage, padding, padding);
-
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL(`image/${format}`);
-    link.download = `qrcode.${format}`;
-    link.click();
-  }
-}
+// Initial call
+renderInputs(currentType);

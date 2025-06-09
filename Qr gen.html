@@ -56,12 +56,27 @@
     <!-- index.html -->
 …
   <section id="main">
+    <!-- QR Type Tabs -->
+<ul class="nav nav-tabs mb-3" id="qrTypeTabs">
+  <li class="nav-item"><a class="nav-link active" data-type="url" href="#">URL</a></li>
+  <li class="nav-item"><a class="nav-link" data-type="pdf" href="#">PDF</a></li>
+  <li class="nav-item"><a class="nav-link" data-type="email" href="#">Email</a></li>
+  <li class="nav-item"><a class="nav-link" data-type="phone" href="#">Phone</a></li>
+  <li class="nav-item"><a class="nav-link" data-type="sms" href="#">SMS</a></li>
+  <li class="nav-item"><a class="nav-link" data-type="wifi" href="#">Wi-Fi</a></li>
+</ul>
+
+<!-- Dynamic Input Fields -->
+<div id="qrInputs">
+  <input type="text" id="urlInput" class="form-control mb-3" placeholder="Enter URL here">
+</div>
+
     <div class="row">
       <!-- Left column: all controls -->
       <div class="col-md-4 d-flex flex-column">
-        <div class="mb-4">
+        <!-- <div class="mb-4">
           <input type="text" id="urlInput" class="form-control" placeholder="Enter URL here">
-        </div>
+        </div> -->
         <div class="d-grid gap-2 mb-4">
           <a class="btn gen-btn" onclick="generateQR()">Generate QR Code</a>
         </div>
@@ -69,7 +84,7 @@
           <select class="form-select mb-2" id="formatSelect">
             <option value="png">PNG</option>
             <option value="jpeg">JPG</option>
-            <option value="svg">SVG</option>
+            <!-- <option value="svg">SVG</option> -->
           </select>
           <a class="btn gen-btn" onclick="downloadQR()">Download QR Code</a>
         </div>
@@ -79,6 +94,7 @@
       <div class="col-md-8 d-flex justify-content-center align-items-center">
         <div id="qrcode"></div>
       </div>
+      
     </div>
   </section>
 …
