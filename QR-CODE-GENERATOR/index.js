@@ -117,3 +117,33 @@ function generateQR() {
 
 // Initial call
 renderInputs(currentType);
+
+function downloadQR() {
+  const format = document.getElementById('formatSelect').value;    // "png" or "jpeg"
+  const qrContainer = document.getElementById('qrcode');
+  // First try to find an <img> (some browsers), otherwise a <canvas>
+  const img = qrContainer.querySelector('img');
+  const canvas = qrContainer.querySelector('canvas');
+  if (!img && !canvas) {
+    return alert("Please generate a QR code first!");
+  }
+
+  let dataUrl;
+  if (img) {
+    // QRCode.js sometimes outputs a data-URL img
+    dataUrl = img.src;
+  } else {
+    // Canvas output: for JPEG we need the MIME type set explicitly
+    dataUrl = canvas.toDataURL(
+      format === 'jpeg' ? 'image/jpeg' : 'image/png'
+    );
+  }
+
+  // Create a temporary link to trigger download
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = `qr-code.${format}`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
