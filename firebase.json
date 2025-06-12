@@ -5,6 +5,10 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    "github": {
+      "repo": "ABHI1996ABHI/QR-code-Generator",
+      "branch": "main"
+    }
   }
 }
