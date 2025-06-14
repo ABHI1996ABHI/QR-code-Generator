@@ -37,6 +37,22 @@ body {
     font-weight: bold;
     font-size: 18px;
     border-radius: 30px;
+    margin-top:20px;
+
+}
+
+.dn-btn{
+
+  background: #3d52a0 !important;
+    color: rgb(255, 255, 255) !important;
+    display: inline-block;
+    line-height: 14px;
+    text-decoration: none;
+    padding: 15px 30px;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 30px;
+    
 
 }
 
@@ -199,5 +215,12 @@ border-color: #7091e6;
       100% {
         transform: translateX(-50%);
       }
+    }
+
+    /* pdf upload progress Bar CSS */
+
+    .progress {
+      padding-top: 20px;
+      margin-bottom: 20px;
     }
     

@@ -1,5 +1,6 @@
 const qrInputs = document.getElementById('qrInputs');
 let currentType = 'url'; // default
+let uploadTask = null;   // for canceling PDF upload
 
 // Tab click handling
 document.querySelectorAll('#qrTypeTabs .nav-link').forEach(tab => {
@@ -46,17 +47,16 @@ function renderInputs(type) {
     case 'pdf':
       html = `
         <input type="file" id="pdfInput" class="form-control mb-3" accept="application/pdf">
-        <small class="text-muted">Select a PDF file to upload and generate QR Code.</small>
+        <small class="text-muted">Select a PDF file (max 10MB) to upload and generate QR Code.</small>
       `;
       break;
   }
   qrInputs.innerHTML = html;
 }
 
-// Extend QR logic
+// Generate QR Code
 async function generateQR() {
   let qrText = '';
-
   const qrCodeContainer = document.getElementById('qrcode');
   qrCodeContainer.innerHTML = '';
 
@@ -87,7 +87,6 @@ async function generateQR() {
       const enc = document.getElementById('encryptionInput').value;
       qrText = `WIFI:T:${enc};S:${ssid};P:${password};;`;
       break;
-
     case 'pdf':
       const pdfFile = document.getElementById('pdfInput').files[0];
       if (!pdfFile) {
@@ -95,16 +94,62 @@ async function generateQR() {
         return alert("Please upload a PDF file.");
       }
 
+      // Validate file type and size
+      if (pdfFile.type !== "application/pdf") {
+        loaderModal.hide();
+        return alert("Invalid file type. Please upload a PDF.");
+      }
+      if (pdfFile.size > 10 * 1024 * 1024) {
+        loaderModal.hide();
+        return alert("File too large. Max size is 10MB.");
+      }
+
       try {
+        const progressContainer = document.getElementById('uploadProgressContainer');
+        const progressBar = document.getElementById('uploadProgressBar');
+        const cancelBtn = document.getElementById('cancelUploadBtn');
+
+        progressContainer.style.display = 'block';
+        progressBar.style.width = '0%';
+        progressBar.textContent = '0%';
+
         const storageRef = firebase.storage().ref(`pdfs/${Date.now()}_${pdfFile.name}`);
-        await storageRef.put(pdfFile);
-        const fileURL = await storageRef.getDownloadURL();
-        qrText = fileURL;
+        uploadTask = storageRef.put(pdfFile);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            progressBar.style.width = `${progress}%`;
+            progressBar.textContent = `${progress}%`;
+          },
+          (error) => {
+            progressContainer.style.display = 'none';
+            loaderModal.hide();
+            alert("Upload canceled or failed.");
+          },
+          async () => {
+            const fileURL = await uploadTask.snapshot.ref.getDownloadURL();
+            progressContainer.style.display = 'none';
+            finalizeQR(fileURL);
+          }
+        );
+
+        cancelBtn.onclick = () => {
+          if (uploadTask) {
+            uploadTask.cancel();
+            uploadTask = null;
+            progressContainer.style.display = 'none';
+            loaderModal.hide();
+            alert("Upload canceled.");
+          }
+        };
+
+        return;
       } catch (err) {
         loaderModal.hide();
-        return alert("PDF upload failed. Please try again.");
+        return alert("Upload failed. Try again.");
       }
-      break;
   }
 
   if (!qrText) {
@@ -112,6 +157,13 @@ async function generateQR() {
     return alert("Please fill in the required fields!");
   }
 
+  finalizeQR(qrText);
+}
+
+// Final QR rendering helper
+function finalizeQR(qrText) {
+  const qrCodeContainer = document.getElementById('qrcode');
+  qrCodeContainer.innerHTML = '';
   currentURL = qrText;
 
   setTimeout(() => {
@@ -123,6 +175,7 @@ async function generateQR() {
       colorLight: "#ffffff",
       correctLevel: QRCode.CorrectLevel.H
     });
+    const loaderModal = bootstrap.Modal.getInstance(document.getElementById('loaderModal'));
     loaderModal.hide();
   }, 1000);
 }
@@ -130,6 +183,7 @@ async function generateQR() {
 // Initial call
 renderInputs(currentType);
 
+// Download QR logic
 function downloadQR() {
   const format = document.getElementById('formatSelect').value;
   const qrContainer = document.getElementById('qrcode');
@@ -153,4 +207,24 @@ function downloadQR() {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+}
+function showToast(message, type = 'success') {
+  const toastEl = document.getElementById('toastMessage');
+  const toastBody = document.getElementById('toastBody');
+
+  // Set message
+  toastBody.textContent = message;
+
+  // Set color type
+  toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning');
+  if (type === 'error') {
+    toastEl.classList.add('bg-danger');
+  } else if (type === 'warning') {
+    toastEl.classList.add('bg-warning');
+  } else {
+    toastEl.classList.add('bg-success');
+  }
+
+  const toast = new bootstrap.Toast(toastEl);
+  toast.show();
 }

@@ -69,9 +69,18 @@
 <!-- Dynamic Input Fields -->
 <div id="qrInputs">
   <input type="text" id="urlInput" class="form-control mb-3" placeholder="Enter URL here">
- 
-
 </div>
+
+<!-- Upload Progress UI -->
+<div id="uploadProgressContainer" class="mt-3" style="display:none;">
+  <label class="fw-bold mb-1">Uploading PDF:</label>
+  <div class="progress mb-2" style="height: 25px;">
+    <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%">0%</div>
+  </div>
+  <button id="cancelUploadBtn" class="btn btn-sm btn-danger">Cancel Upload</button>
+</div>
+
+
 
     <div class="row">
       <!-- Left column: all controls -->
@@ -88,7 +97,7 @@
             <option value="jpeg">JPG</option>
             <!-- <option value="svg">SVG</option> -->
           </select>
-        <a class="btn gen-btn" onclick="downloadQR()">Download QR Code</a>
+        <a class="btn dn-btn" onclick="downloadQR()">Download QR Code</a>
         </div>
       </div>
 
@@ -116,6 +125,16 @@
       </div>
     </div>
   </div>
+  <!-- Toast Notification Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+  <div id="toastMessage" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="toastBody">Success message here</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
 
   <!-- Scripts -->
 <!-- Firebase -->
