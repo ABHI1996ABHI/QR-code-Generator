@@ -43,20 +43,26 @@ function renderInputs(type) {
           <option value="nopass">No Password</option>
         </select>`;
       break;
-      case 'pdf':
-        html = `
-          <input type="file" id="pdfInput" class="form-control mb-3" accept="application/pdf">
-          <small class="text-muted">Select a PDF file to generate QR Code.</small>
-        `;
-        break;
-        
+    case 'pdf':
+      html = `
+        <input type="file" id="pdfInput" class="form-control mb-3" accept="application/pdf">
+        <small class="text-muted">Select a PDF file to upload and generate QR Code.</small>
+      `;
+      break;
   }
   qrInputs.innerHTML = html;
 }
 
 // Extend QR logic
-function generateQR() {
+async function generateQR() {
   let qrText = '';
+
+  const qrCodeContainer = document.getElementById('qrcode');
+  qrCodeContainer.innerHTML = '';
+
+  const loaderModal = new bootstrap.Modal(document.getElementById('loaderModal'));
+  loaderModal.show();
+
   switch (currentType) {
     case 'url':
       qrText = document.getElementById('urlInput').value.trim();
@@ -82,25 +88,31 @@ function generateQR() {
       qrText = `WIFI:T:${enc};S:${ssid};P:${password};;`;
       break;
 
-      case 'pdf':
-  const pdfFile = document.getElementById('pdfInput').files[0];
-  if (!pdfFile) return alert("Please upload a PDF file.");
-  
-  const pdfUrl = URL.createObjectURL(pdfFile); // creates a temporary link to the file
-  qrText = pdfUrl;
-  break;
+    case 'pdf':
+      const pdfFile = document.getElementById('pdfInput').files[0];
+      if (!pdfFile) {
+        loaderModal.hide();
+        return alert("Please upload a PDF file.");
+      }
 
-      
+      try {
+        const storageRef = firebase.storage().ref(`pdfs/${Date.now()}_${pdfFile.name}`);
+        await storageRef.put(pdfFile);
+        const fileURL = await storageRef.getDownloadURL();
+        qrText = fileURL;
+      } catch (err) {
+        loaderModal.hide();
+        return alert("PDF upload failed. Please try again.");
+      }
+      break;
   }
 
-  if (!qrText) return alert("Please fill in the required fields!");
+  if (!qrText) {
+    loaderModal.hide();
+    return alert("Please fill in the required fields!");
+  }
 
-  const qrCodeContainer = document.getElementById('qrcode');
-  qrCodeContainer.innerHTML = '';
   currentURL = qrText;
-
-  const loaderModal = new bootstrap.Modal(document.getElementById('loaderModal'));
-  loaderModal.show();
 
   setTimeout(() => {
     currentQR = new QRCode(qrCodeContainer, {
@@ -119,27 +131,22 @@ function generateQR() {
 renderInputs(currentType);
 
 function downloadQR() {
-  const format = document.getElementById('formatSelect').value;    // "png" or "jpeg"
+  const format = document.getElementById('formatSelect').value;
   const qrContainer = document.getElementById('qrcode');
-  // First try to find an <img> (some browsers), otherwise a <canvas>
   const img = qrContainer.querySelector('img');
   const canvas = qrContainer.querySelector('canvas');
+
   if (!img && !canvas) {
     return alert("Please generate a QR code first!");
   }
 
   let dataUrl;
   if (img) {
-    // QRCode.js sometimes outputs a data-URL img
     dataUrl = img.src;
   } else {
-    // Canvas output: for JPEG we need the MIME type set explicitly
-    dataUrl = canvas.toDataURL(
-      format === 'jpeg' ? 'image/jpeg' : 'image/png'
-    );
+    dataUrl = canvas.toDataURL(format === 'jpeg' ? 'image/jpeg' : 'image/png');
   }
 
-  // Create a temporary link to trigger download
   const a = document.createElement('a');
   a.href = dataUrl;
   a.download = `qr-code.${format}`;
