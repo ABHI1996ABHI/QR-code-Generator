@@ -56,8 +56,44 @@ function renderInputs(type) {
         <small class="text-muted">Only PDF allowed. Max 10MB.</small>
       `;
       break;
+
+    case 'menu':
+      html = `
+        <label class="form-label">Choose one:</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="menuOption" id="menuUrlOption" checked>
+          <label class="form-check-label" for="menuUrlOption">Enter Menu URL</label>
+        </div>
+        <input type="text" id="menuUrlInput" class="form-control mb-3" placeholder="https://your-restaurant.com/menu">
+
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="menuOption" id="menuPdfOption">
+          <label class="form-check-label" for="menuPdfOption">Upload Menu File (PDF/Image)</label>
+        </div>
+        <input type="file" id="menuPdfInput" class="form-control mb-2" accept="application/pdf,image/*" disabled>
+
+        <div class="progress my-2" style="height: 20px;">
+          <div id="uploadProgress" class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%">0%</div>
+        </div>
+        <button id="cancelUploadBtn" class="btn btn-sm btn-danger mb-2 d-none">Cancel Upload</button>
+      `;
+      break;
   }
+
   qrInputs.innerHTML = html;
+
+  // Handle radio input toggle for menu
+  if (type === 'menu') {
+    document.getElementById('menuUrlOption').addEventListener('change', () => {
+      document.getElementById('menuUrlInput').disabled = false;
+      document.getElementById('menuPdfInput').disabled = true;
+    });
+
+    document.getElementById('menuPdfOption').addEventListener('change', () => {
+      document.getElementById('menuUrlInput').disabled = true;
+      document.getElementById('menuPdfInput').disabled = false;
+    });
+  }
 }
 
 // Extend QR logic
@@ -95,59 +131,71 @@ async function generateQR() {
       break;
 
     case 'pdf':
-      const pdfFile = document.getElementById('pdfInput').files[0];
+    case 'menu':
+      const isMenu = currentType === 'menu';
+      const isPdf = isMenu ? document.getElementById('menuPdfOption').checked : true;
+      const fileInput = isMenu ? document.getElementById('menuPdfInput') : document.getElementById('pdfInput');
       progressBar = document.getElementById('uploadProgress');
       cancelBtn = document.getElementById('cancelUploadBtn');
 
-      if (!pdfFile) {
-        loaderModal.hide();
-        return alert("Please upload a PDF file.");
-      }
-
-      if (pdfFile.type !== 'application/pdf') {
-        loaderModal.hide();
-        return alert("Only PDF files are allowed.");
-      }
-
-      if (pdfFile.size > 10 * 1024 * 1024) {
-        loaderModal.hide();
-        return alert("File size exceeds 10MB.");
-      }
-
-      try {
-        const storageRef = firebase.storage().ref(`pdfs/${Date.now()}_${pdfFile.name}`);
-        uploadTask = storageRef.put(pdfFile);
-
-        cancelBtn.classList.remove('d-none');
-        cancelBtn.addEventListener('click', () => {
-          if (uploadTask) uploadTask.cancel();
-          cancelBtn.classList.add('d-none');
+      if (isPdf) {
+        const file = fileInput.files[0];
+        if (!file) {
           loaderModal.hide();
-          alert("Upload cancelled.");
-        });
+          return alert("Please upload a file.");
+        }
+        const isPdfType = file.type === 'application/pdf';
+        const isImageType = file.type.startsWith('image/');
+        if (!isPdfType && !isImageType) {
+          loaderModal.hide();
+          return alert("Only PDF or image files are allowed.");
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          loaderModal.hide();
+          return alert("File size exceeds 10MB.");
+        }
 
-        await new Promise((resolve, reject) => {
-          uploadTask.on(
-            'state_changed',
-            snapshot => {
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              progressBar.style.width = `${progress.toFixed(0)}%`;
-              progressBar.textContent = `${progress.toFixed(0)}%`;
-            },
-            error => reject(error),
-            async () => {
-              const fileURL = await uploadTask.snapshot.ref.getDownloadURL();
-              qrText = fileURL;
-              resolve();
-            }
-          );
-        });
+        try {
+          const folder = isMenu ? 'restaurant_menus' : 'pdfs';
+          const storageRef = firebase.storage().ref(`${folder}/${Date.now()}_${file.name}`);
+          uploadTask = storageRef.put(file);
 
-      } catch (err) {
-        loaderModal.hide();
-        return alert("PDF upload failed. Please try again.");
+          cancelBtn.classList.remove('d-none');
+          cancelBtn.addEventListener('click', () => {
+            if (uploadTask) uploadTask.cancel();
+            cancelBtn.classList.add('d-none');
+            loaderModal.hide();
+            alert("Upload cancelled.");
+          });
+
+          await new Promise((resolve, reject) => {
+            uploadTask.on(
+              'state_changed',
+              snapshot => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                progressBar.style.width = `${progress.toFixed(0)}%`;
+                progressBar.textContent = `${progress.toFixed(0)}%`;
+              },
+              error => reject(error),
+              async () => {
+                const fileURL = await uploadTask.snapshot.ref.getDownloadURL();
+                qrText = fileURL;
+                resolve();
+              }
+            );
+          });
+        } catch (err) {
+          loaderModal.hide();
+          return alert("Upload failed. Please try again.");
+        }
+
+      } else {
+        qrText = document.getElementById('menuUrlInput').value.trim();
+        if (!qrText) {
+          loaderModal.hide();
+          return alert("Please enter the menu URL.");
+        }
       }
-
       break;
   }
 
