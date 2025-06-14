@@ -240,3 +240,30 @@ function downloadQR() {
   a.click();
   document.body.removeChild(a);
 }
+
+// Reset QR Code functionality
+document.getElementById('resetBtn').addEventListener('click', () => {
+  // Clear QR code preview
+  const qrCodeContainer = document.getElementById('qrcode');
+  qrCodeContainer.innerHTML = '';
+
+  // Reset inputs to default tab
+  document.querySelectorAll('#qrTypeTabs .nav-link').forEach(t => t.classList.remove('active'));
+  const defaultTab = document.querySelector('#qrTypeTabs .nav-link[data-type="url"]');
+  defaultTab.classList.add('active');
+  currentType = 'url';
+  renderInputs(currentType);
+
+  // Reset progress bar and cancel upload
+  if (progressBar) {
+    progressBar.style.width = "0%";
+    progressBar.textContent = "0%";
+  }
+
+  if (cancelBtn) {
+    cancelBtn.classList.add('d-none');
+  }
+
+  // Reset any URL or input state
+  currentURL = '';
+});
