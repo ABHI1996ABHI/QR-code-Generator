@@ -1,6 +1,8 @@
 const qrInputs = document.getElementById('qrInputs');
 let currentType = 'url'; // default
-let uploadTask = null;   // for canceling PDF upload
+let uploadTask = null; // for cancel upload
+let progressBar = null;
+let cancelBtn = null;
 
 // Tab click handling
 document.querySelectorAll('#qrTypeTabs .nav-link').forEach(tab => {
@@ -46,15 +48,19 @@ function renderInputs(type) {
       break;
     case 'pdf':
       html = `
-        <input type="file" id="pdfInput" class="form-control mb-3" accept="application/pdf">
-        <small class="text-muted">Select a PDF file (max 10MB) to upload and generate QR Code.</small>
+        <input type="file" id="pdfInput" class="form-control mb-2" accept="application/pdf">
+        <div class="progress my-2" style="height: 20px;">
+          <div id="uploadProgress" class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%">0%</div>
+        </div>
+        <button id="cancelUploadBtn" class="btn btn-sm btn-danger mb-2 d-none">Cancel Upload</button>
+        <small class="text-muted">Only PDF allowed. Max 10MB.</small>
       `;
       break;
   }
   qrInputs.innerHTML = html;
 }
 
-// Generate QR Code
+// Extend QR logic
 async function generateQR() {
   let qrText = '';
   const qrCodeContainer = document.getElementById('qrcode');
@@ -87,69 +93,62 @@ async function generateQR() {
       const enc = document.getElementById('encryptionInput').value;
       qrText = `WIFI:T:${enc};S:${ssid};P:${password};;`;
       break;
+
     case 'pdf':
       const pdfFile = document.getElementById('pdfInput').files[0];
+      progressBar = document.getElementById('uploadProgress');
+      cancelBtn = document.getElementById('cancelUploadBtn');
+
       if (!pdfFile) {
         loaderModal.hide();
         return alert("Please upload a PDF file.");
       }
 
-      // Validate file type and size
-      if (pdfFile.type !== "application/pdf") {
+      if (pdfFile.type !== 'application/pdf') {
         loaderModal.hide();
-        return alert("Invalid file type. Please upload a PDF.");
+        return alert("Only PDF files are allowed.");
       }
+
       if (pdfFile.size > 10 * 1024 * 1024) {
         loaderModal.hide();
-        return alert("File too large. Max size is 10MB.");
+        return alert("File size exceeds 10MB.");
       }
 
       try {
-        const progressContainer = document.getElementById('uploadProgressContainer');
-        const progressBar = document.getElementById('uploadProgressBar');
-        const cancelBtn = document.getElementById('cancelUploadBtn');
-
-        progressContainer.style.display = 'block';
-        progressBar.style.width = '0%';
-        progressBar.textContent = '0%';
-
         const storageRef = firebase.storage().ref(`pdfs/${Date.now()}_${pdfFile.name}`);
         uploadTask = storageRef.put(pdfFile);
 
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            const progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            progressBar.style.width = `${progress}%`;
-            progressBar.textContent = `${progress}%`;
-          },
-          (error) => {
-            progressContainer.style.display = 'none';
-            loaderModal.hide();
-            alert("Upload canceled or failed.");
-          },
-          async () => {
-            const fileURL = await uploadTask.snapshot.ref.getDownloadURL();
-            progressContainer.style.display = 'none';
-            finalizeQR(fileURL);
-          }
-        );
+        cancelBtn.classList.remove('d-none');
+        cancelBtn.addEventListener('click', () => {
+          if (uploadTask) uploadTask.cancel();
+          cancelBtn.classList.add('d-none');
+          loaderModal.hide();
+          alert("Upload cancelled.");
+        });
 
-        cancelBtn.onclick = () => {
-          if (uploadTask) {
-            uploadTask.cancel();
-            uploadTask = null;
-            progressContainer.style.display = 'none';
-            loaderModal.hide();
-            alert("Upload canceled.");
-          }
-        };
+        await new Promise((resolve, reject) => {
+          uploadTask.on(
+            'state_changed',
+            snapshot => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              progressBar.style.width = `${progress.toFixed(0)}%`;
+              progressBar.textContent = `${progress.toFixed(0)}%`;
+            },
+            error => reject(error),
+            async () => {
+              const fileURL = await uploadTask.snapshot.ref.getDownloadURL();
+              qrText = fileURL;
+              resolve();
+            }
+          );
+        });
 
-        return;
       } catch (err) {
         loaderModal.hide();
-        return alert("Upload failed. Try again.");
+        return alert("PDF upload failed. Please try again.");
       }
+
+      break;
   }
 
   if (!qrText) {
@@ -157,17 +156,10 @@ async function generateQR() {
     return alert("Please fill in the required fields!");
   }
 
-  finalizeQR(qrText);
-}
-
-// Final QR rendering helper
-function finalizeQR(qrText) {
-  const qrCodeContainer = document.getElementById('qrcode');
-  qrCodeContainer.innerHTML = '';
   currentURL = qrText;
 
   setTimeout(() => {
-    currentQR = new QRCode(qrCodeContainer, {
+    new QRCode(qrCodeContainer, {
       text: qrText,
       width: 250,
       height: 250,
@@ -175,56 +167,28 @@ function finalizeQR(qrText) {
       colorLight: "#ffffff",
       correctLevel: QRCode.CorrectLevel.H
     });
-    const loaderModal = bootstrap.Modal.getInstance(document.getElementById('loaderModal'));
+    if (progressBar) progressBar.style.width = "0%";
+    if (cancelBtn) cancelBtn.classList.add('d-none');
     loaderModal.hide();
-  }, 1000);
+  }, 500);
 }
 
-// Initial call
+// Initial render
 renderInputs(currentType);
 
-// Download QR logic
 function downloadQR() {
   const format = document.getElementById('formatSelect').value;
   const qrContainer = document.getElementById('qrcode');
   const img = qrContainer.querySelector('img');
   const canvas = qrContainer.querySelector('canvas');
 
-  if (!img && !canvas) {
-    return alert("Please generate a QR code first!");
-  }
+  if (!img && !canvas) return alert("Please generate a QR code first!");
 
-  let dataUrl;
-  if (img) {
-    dataUrl = img.src;
-  } else {
-    dataUrl = canvas.toDataURL(format === 'jpeg' ? 'image/jpeg' : 'image/png');
-  }
-
+  let dataUrl = img ? img.src : canvas.toDataURL(format === 'jpeg' ? 'image/jpeg' : 'image/png');
   const a = document.createElement('a');
   a.href = dataUrl;
   a.download = `qr-code.${format}`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-}
-function showToast(message, type = 'success') {
-  const toastEl = document.getElementById('toastMessage');
-  const toastBody = document.getElementById('toastBody');
-
-  // Set message
-  toastBody.textContent = message;
-
-  // Set color type
-  toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning');
-  if (type === 'error') {
-    toastEl.classList.add('bg-danger');
-  } else if (type === 'warning') {
-    toastEl.classList.add('bg-warning');
-  } else {
-    toastEl.classList.add('bg-success');
-  }
-
-  const toast = new bootstrap.Toast(toastEl);
-  toast.show();
 }
