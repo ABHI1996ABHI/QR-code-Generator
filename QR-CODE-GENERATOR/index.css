@@ -160,6 +160,8 @@ border-color: #7091e6;
   color: #3d52a0;
 }
 
+.log-btn{padding: 10px; color: #fff;}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
   .qr-heading {
