@@ -108,7 +108,7 @@ function generateQR() {
   }, 1000);
 }
 
-// Download QR with padding
+// Download QR with reduced padding and higher resolution
 function downloadQR() {
   const format = document.getElementById('formatSelect').value;
   const qrContainer = document.getElementById('qrcode');
@@ -118,20 +118,31 @@ function downloadQR() {
     return alert("Please generate a QR code first!");
   }
 
-  const originalCanvas = canvas;
-  const originalSize = originalCanvas.width;
-  const padding = 20; // adjust padding as needed
+  const originalSize = canvas.width;
+  const padding = 20; // reduced white space
+  const scale = 4;    // upscale to 1000px output
+
+  const finalSize = (originalSize + 2 * padding) * scale;
 
   const paddedCanvas = document.createElement('canvas');
-  paddedCanvas.width = originalSize + 2 * padding;
-  paddedCanvas.height = originalSize + 2 * padding;
+  paddedCanvas.width = finalSize;
+  paddedCanvas.height = finalSize;
 
   const ctx = paddedCanvas.getContext('2d');
-  ctx.fillStyle = '#ffffff'; // white background
-  ctx.fillRect(0, 0, paddedCanvas.width, paddedCanvas.height);
+  ctx.imageSmoothingEnabled = false;
 
-  ctx.drawImage(originalCanvas, padding, padding);
+  // white background
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, finalSize, finalSize);
 
+  // draw original QR into center with padding
+  ctx.drawImage(
+    canvas,
+    0, 0, originalSize, originalSize,
+    padding * scale, padding * scale, originalSize * scale, originalSize * scale
+  );
+
+  // export and download
   const dataUrl = paddedCanvas.toDataURL(
     format === 'jpeg' ? 'image/jpeg' : 'image/png'
   );
