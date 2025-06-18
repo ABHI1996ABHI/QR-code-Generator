@@ -11,7 +11,65 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
   <link href="index.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  
+  <style>
+    /* Custom styles for tab icons */
+    .nav-tabs .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 8px 8px 0 0;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-tabs .nav-link i {
+      font-size: 16px;
+      width: 18px;
+      text-align: center;
+    }
+    
+    .nav-tabs .nav-link:hover {
+      background-color: #f8f9fa;
+      transform: translateY(-2px);
+    }
+    
+    .nav-tabs .nav-link.active {
+      background-color: #adbbda;
+      color: white;
+      border-color: #adbbda;
+    }
+    
+    /* Icon colors for different tab types */
+    .nav-tabs .nav-link[data-type="url"] i { color: #007bff; }
+    .nav-tabs .nav-link[data-type="pdf"] i { color: #dc3545; }
+    .nav-tabs .nav-link[data-type="email"] i { color: #28a745; }
+    .nav-tabs .nav-link[data-type="phone"] i { color: #6f42c1; }
+    .nav-tabs .nav-link[data-type="sms"] i { color: #fd7e14; }
+    .nav-tabs .nav-link[data-type="wifi"] i { color: #20c997; }
+    
+    /* Keep icon color white when tab is active */
+    .nav-tabs .nav-link.active i {
+      color: white !important;
+    }
+    
+    /* Responsive design for smaller screens */
+    @media (max-width: 768px) {
+      .nav-tabs .nav-link {
+        font-size: 14px;
+        padding: 10px 12px;
+        gap: 6px;
+      }
+      
+      .nav-tabs .nav-link i {
+        font-size: 14px;
+        width: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -50,14 +108,44 @@
     </svg>
 
     <section id="main">
-      <!-- QR Type Tabs -->
+      <!-- QR Type Tabs with Icons -->
       <ul class="nav nav-tabs mb-3" id="qrTypeTabs">
-        <li class="nav-item"><a class="nav-link active" data-type="url" href="#">URL</a></li>
-        <li class="nav-item"><a class="nav-link" data-type="pdf" href="#">PDF</a></li>
-        <li class="nav-item"><a class="nav-link" data-type="email" href="#">Email</a></li>
-        <li class="nav-item"><a class="nav-link" data-type="phone" href="#">Phone</a></li>
-        <li class="nav-item"><a class="nav-link" data-type="sms" href="#">SMS</a></li>
-        <li class="nav-item"><a class="nav-link" data-type="wifi" href="#">Wi-Fi</a></li>
+        <li class="nav-item">
+          <a class="nav-link active" data-type="url" href="#">
+            <i class="fas fa-link"></i>
+            <span>URL</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-type="pdf" href="#">
+            <i class="fas fa-file-pdf"></i>
+            <span>PDF</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-type="email" href="#">
+            <i class="fas fa-envelope"></i>
+            <span>Email</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-type="phone" href="#">
+            <i class="fas fa-phone"></i>
+            <span>Phone</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-type="sms" href="#">
+            <i class="fas fa-sms"></i>
+            <span>SMS</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-type="wifi" href="#">
+            <i class="fas fa-wifi"></i>
+            <span>Wi-Fi</span>
+          </a>
+        </li>
       </ul>
 
       <!-- Dynamic Input Fields -->
@@ -99,7 +187,6 @@
       </div>
     </div>
   </div>
-
 
   <!-- Footer -->
 <footer class="footer">
@@ -188,7 +275,6 @@
     </div>
   </div>
 </footer>
-
 
   <!-- Scripts -->
   <script src="nav.js"></script>
