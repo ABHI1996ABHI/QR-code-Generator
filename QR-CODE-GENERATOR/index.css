@@ -24,7 +24,7 @@ body {
   height: 60px;
   width: 100%;                 /* ensure full width */
   flex-shrink: 0;   
-  background: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   opacity: 0.8;           /* don't let it shrink */
 }
 
@@ -50,7 +50,7 @@ body {
   padding: 0 1rem;
   line-height: 60px;
   text-decoration: none;
-  color: #000;
+  color: #fff;
   transition: background 0.3s;
 }
 .nav-menu li a:hover { background: #444; }
@@ -143,7 +143,7 @@ body {
   display: flex;
   justify-content: center;
   border-radius: 12px;
-  background: linear-gradient(145deg, #f8f9ff, #ffffff);
+  /* background: linear-gradient(145deg, #f8f9ff, #ffffff); */
   padding: 20px;
   box-shadow: inset 0 2px 8px rgba(102, 126, 234, 0.1);
 }
