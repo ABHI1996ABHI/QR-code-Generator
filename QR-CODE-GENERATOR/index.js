@@ -43,18 +43,16 @@ function renderInputs(type) {
           <option value="nopass">No Password</option>
         </select>`;
       break;
-      case 'pdf':
-        html = `
-          <input type="file" id="pdfInput" class="form-control mb-3" accept="application/pdf">
-          <small class="text-muted">Select a PDF file to generate QR Code.</small>
-        `;
-        break;
-        
+    case 'pdf':
+      html = `
+        <input type="file" id="pdfInput" class="form-control mb-3" accept="application/pdf">
+        <small class="text-muted">Select a PDF file to generate QR Code.</small>`;
+      break;
   }
   qrInputs.innerHTML = html;
 }
 
-// Extend QR logic
+// Generate QR code
 function generateQR() {
   let qrText = '';
   switch (currentType) {
@@ -81,29 +79,24 @@ function generateQR() {
       const enc = document.getElementById('encryptionInput').value;
       qrText = `WIFI:T:${enc};S:${ssid};P:${password};;`;
       break;
-
-      case 'pdf':
-  const pdfFile = document.getElementById('pdfInput').files[0];
-  if (!pdfFile) return alert("Please upload a PDF file.");
-  
-  const pdfUrl = URL.createObjectURL(pdfFile); // creates a temporary link to the file
-  qrText = pdfUrl;
-  break;
-
-      
+    case 'pdf':
+      const pdfFile = document.getElementById('pdfInput').files[0];
+      if (!pdfFile) return alert("Please upload a PDF file.");
+      const pdfUrl = URL.createObjectURL(pdfFile);
+      qrText = pdfUrl;
+      break;
   }
 
   if (!qrText) return alert("Please fill in the required fields!");
 
   const qrCodeContainer = document.getElementById('qrcode');
   qrCodeContainer.innerHTML = '';
-  currentURL = qrText;
 
   const loaderModal = new bootstrap.Modal(document.getElementById('loaderModal'));
   loaderModal.show();
 
   setTimeout(() => {
-    currentQR = new QRCode(qrCodeContainer, {
+    new QRCode(qrCodeContainer, {
       text: qrText,
       width: 250,
       height: 250,
@@ -115,31 +108,34 @@ function generateQR() {
   }, 1000);
 }
 
-// Initial call
-renderInputs(currentType);
-
+// Download QR with padding
 function downloadQR() {
-  const format = document.getElementById('formatSelect').value;    // "png" or "jpeg"
+  const format = document.getElementById('formatSelect').value;
   const qrContainer = document.getElementById('qrcode');
-  // First try to find an <img> (some browsers), otherwise a <canvas>
-  const img = qrContainer.querySelector('img');
   const canvas = qrContainer.querySelector('canvas');
-  if (!img && !canvas) {
+
+  if (!canvas) {
     return alert("Please generate a QR code first!");
   }
 
-  let dataUrl;
-  if (img) {
-    // QRCode.js sometimes outputs a data-URL img
-    dataUrl = img.src;
-  } else {
-    // Canvas output: for JPEG we need the MIME type set explicitly
-    dataUrl = canvas.toDataURL(
-      format === 'jpeg' ? 'image/jpeg' : 'image/png'
-    );
-  }
+  const originalCanvas = canvas;
+  const originalSize = originalCanvas.width;
+  const padding = 40; // adjust padding as needed
 
-  // Create a temporary link to trigger download
+  const paddedCanvas = document.createElement('canvas');
+  paddedCanvas.width = originalSize + 2 * padding;
+  paddedCanvas.height = originalSize + 2 * padding;
+
+  const ctx = paddedCanvas.getContext('2d');
+  ctx.fillStyle = '#ffffff'; // white background
+  ctx.fillRect(0, 0, paddedCanvas.width, paddedCanvas.height);
+
+  ctx.drawImage(originalCanvas, padding, padding);
+
+  const dataUrl = paddedCanvas.toDataURL(
+    format === 'jpeg' ? 'image/jpeg' : 'image/png'
+  );
+
   const a = document.createElement('a');
   a.href = dataUrl;
   a.download = `qr-code.${format}`;
@@ -147,3 +143,6 @@ function downloadQR() {
   a.click();
   document.body.removeChild(a);
 }
+
+// Initial render
+renderInputs(currentType);
