@@ -99,7 +99,7 @@ body {
 
 /* rest of your nav styles remain unchanged… */
 
-.nav-brand img{max-height: 40px; margin-bottom: 14px;}
+.nav-brand img{max-height: 40px; margin-bottom: 14px;filter: brightness(0) invert(1);}
 .nav-menu { list-style: none; display: flex; }
 .nav-menu li a {
   display: block;
