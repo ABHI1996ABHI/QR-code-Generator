@@ -1,22 +1,17 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>QR Code Generator</title>
 
   <!-- Navigation CSS -->
-  <!-- Your existing styles -->
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
   <link href="index.css" rel="stylesheet">
-  
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-
-
-  
 </head>
 <body>
 
@@ -54,54 +49,43 @@
       <path d="M0,120 C200,200 400,0 600,120 C800,240 1000,40 1200,120 L1200,200 L0,200 Z" fill="#adbbda"/>
     </svg>
 
-    <!-- index.html -->
-…
-  <section id="main">
-    <!-- QR Type Tabs -->
-<ul class="nav nav-tabs mb-3" id="qrTypeTabs">
-  <li class="nav-item"><a class="nav-link active" data-type="url" href="#">URL</a></li>
-  <li class="nav-item"><a class="nav-link" data-type="pdf" href="#">PDF</a></li>
-  <li class="nav-item"><a class="nav-link" data-type="email" href="#">Email</a></li>
-  <li class="nav-item"><a class="nav-link" data-type="phone" href="#">Phone</a></li>
-  <li class="nav-item"><a class="nav-link" data-type="sms" href="#">SMS</a></li>
-  <li class="nav-item"><a class="nav-link" data-type="wifi" href="#">Wi-Fi</a></li>
-</ul>
+    <section id="main">
+      <!-- QR Type Tabs -->
+      <ul class="nav nav-tabs mb-3" id="qrTypeTabs">
+        <li class="nav-item"><a class="nav-link active" data-type="url" href="#">URL</a></li>
+        <li class="nav-item"><a class="nav-link" data-type="pdf" href="#">PDF</a></li>
+        <li class="nav-item"><a class="nav-link" data-type="email" href="#">Email</a></li>
+        <li class="nav-item"><a class="nav-link" data-type="phone" href="#">Phone</a></li>
+        <li class="nav-item"><a class="nav-link" data-type="sms" href="#">SMS</a></li>
+        <li class="nav-item"><a class="nav-link" data-type="wifi" href="#">Wi-Fi</a></li>
+      </ul>
 
-<!-- Dynamic Input Fields -->
-<div id="qrInputs">
-  <input type="text" id="urlInput" class="form-control mb-3" placeholder="Enter URL here">
-</div>
-
-    <div class="row">
-      <!-- Left column: all controls -->
-      <div class="col-md-4 d-flex flex-column">
-        <!-- <div class="mb-4">
-          <input type="text" id="urlInput" class="form-control" placeholder="Enter URL here">
-        </div> -->
-        <div class="d-grid gap-2 mb-4">
-          <a class="btn gen-btn" onclick="generateQR()">Generate QR Code</a>
-        </div>
-        <div class="d-grid gap-2 mt-4">
-          <select class="form-select mb-2" id="formatSelect">
-            <option value="png">PNG</option>
-            <option value="jpeg">JPG</option>
-            <!-- <option value="svg">SVG</option> -->
-          </select>
-        <a class="btn gen-btn" onclick="downloadQR()">Download QR Code</a>
-        </div>
+      <!-- Dynamic Input Fields -->
+      <div id="qrInputs">
+        <input type="text" id="urlInput" class="form-control mb-3" placeholder="Enter URL here">
       </div>
 
+      <div class="row">
+        <!-- Left column: all controls -->
+        <div class="col-md-4 d-flex flex-column">
+          <div class="d-grid gap-2 mb-4">
+            <a class="btn gen-btn" onclick="generateQR()">Generate QR Code</a>
+          </div>
+          <div class="d-grid gap-2 mt-4">
+            <select class="form-select mb-2" id="formatSelect">
+              <option value="png">PNG</option>
+              <option value="jpeg">JPG</option>
+            </select>
+            <a class="btn gen-btn" onclick="downloadQR()">Download QR Code</a>
+          </div>
+        </div>
 
-      
-      <!-- Right column: QR output -->
-      <div class="col-md-8 d-flex justify-content-center align-items-center">
-        <div id="qrcode"></div>
+        <!-- Right column: QR output -->
+        <div class="col-md-8 d-flex justify-content-center align-items-center">
+          <div id="qrcode"></div>
+        </div>
       </div>
-      
-    </div>
-  </section>
-…
-
+    </section>
   </div>
 
   <!-- Loader Modal -->
@@ -120,6 +104,5 @@
   <script src="nav.js"></script>
   <script src="index.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
