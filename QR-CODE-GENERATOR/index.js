@@ -108,7 +108,7 @@ function generateQR() {
   }, 1000);
 }
 
-// Download QR with reduced padding and higher resolution
+// Download with white margin, high resolution, and sharp quality
 function downloadQR() {
   const format = document.getElementById('formatSelect').value;
   const qrContainer = document.getElementById('qrcode');
@@ -119,9 +119,8 @@ function downloadQR() {
   }
 
   const originalSize = canvas.width;
-  const padding = 20; // reduced white space
-  const scale = 4;    // upscale to 1000px output
-
+  const padding = 20;      // white space
+  const scale = 4;         // upscale
   const finalSize = (originalSize + 2 * padding) * scale;
 
   const paddedCanvas = document.createElement('canvas');
@@ -129,20 +128,20 @@ function downloadQR() {
   paddedCanvas.height = finalSize;
 
   const ctx = paddedCanvas.getContext('2d');
-  ctx.imageSmoothingEnabled = false;
+  ctx.imageSmoothingEnabled = false; // keep QR crisp
 
-  // white background
+  // Fill background
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, finalSize, finalSize);
 
-  // draw original QR into center with padding
+  // Draw QR code into padded canvas
   ctx.drawImage(
     canvas,
     0, 0, originalSize, originalSize,
-    padding * scale, padding * scale, originalSize * scale, originalSize * scale
+    padding * scale, padding * scale,
+    originalSize * scale, originalSize * scale
   );
 
-  // export and download
   const dataUrl = paddedCanvas.toDataURL(
     format === 'jpeg' ? 'image/jpeg' : 'image/png'
   );
