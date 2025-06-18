@@ -388,8 +388,9 @@ border-color: #7091e6;
 }
 
 .footer-bottom {
-  padding: 30px 0;
-  background: rgba(0, 0, 0, 0.1);
+    padding: 30px 40px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 .footer-bottom-content {
