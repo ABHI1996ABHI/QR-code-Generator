@@ -120,7 +120,7 @@ function downloadQR() {
 
   const originalCanvas = canvas;
   const originalSize = originalCanvas.width;
-  const padding = 40; // adjust padding as needed
+  const padding = 20; // adjust padding as needed
 
   const paddedCanvas = document.createElement('canvas');
   paddedCanvas.width = originalSize + 2 * padding;
