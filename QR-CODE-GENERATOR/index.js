@@ -157,10 +157,9 @@ function downloadQR() {
 // Initial render
 renderInputs(currentType);
 
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('nav-menu');
+ document.addEventListener('DOMContentLoaded', function () {
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
 
     hamburger.addEventListener('click', function () {
       hamburger.classList.toggle('active');

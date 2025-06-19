@@ -117,24 +117,25 @@ body {
 }
 
 /* mobile nav */
+
 @media (max-width: 768px) {
   .hamburger {
     display: flex;
     position: relative;
-    z-index: 1001;
+    z-index: 1100; /* Higher than nav-menu and content */
   }
 
   .nav-menu {
-    position: absolute;
+    position: fixed;
     top: 60px;
-    left: -100%;
+    left: 0;
     width: 100%;
     height: calc(100vh - 60px);
     background: #333;
     flex-direction: column;
     transform: translateX(-100%);
     transition: transform 0.4s ease;
-    z-index: 1000;
+    z-index: 1090; /* Bring it above other sections */
   }
 
   .nav-menu.active {
@@ -146,7 +147,6 @@ body {
     line-height: initial;
   }
 }
-
 
 
 /* 3. Wrap your "main" QR area so it can center itself */
@@ -332,6 +332,7 @@ body {
   position: relative;
   background: #EDE8F5;
   overflow: hidden;
+  z-index: -1;
 }
 
 .wave-container svg {
