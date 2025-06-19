@@ -294,6 +294,9 @@ svg {
 
 /* 5. Extra small screens */
 @media (max-width: 576px) {
+
+  .nav-brand img {margin-bottom: 0;}
+
   .container { 
     padding: 25px; 
     margin: 20px auto; 
