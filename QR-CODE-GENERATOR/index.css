@@ -125,6 +125,11 @@ body {
     z-index: 1100; /* Higher than nav-menu and content */
   }
 
+  body.no-scroll {
+  overflow: hidden;
+}
+
+
   .nav-menu {
     position: fixed;
     top: 60px;
