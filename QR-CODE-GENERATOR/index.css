@@ -118,17 +118,35 @@ body {
 
 /* mobile nav */
 @media (max-width: 768px) {
-  .hamburger { display: flex; }
+  .hamburger {
+    display: flex;
+    position: relative;
+    z-index: 1001;
+  }
+
   .nav-menu {
     position: absolute;
-    top: 60px; left: -100%;
-    width: 100%; height: calc(100vh - 60px);
-    background: #333; flex-direction: column;
-    transition: left 0.3s ease-in-out;
+    top: 60px;
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background: #333;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+    z-index: 1000;
   }
-  .nav-menu.active { left: 0; }
-  .nav-menu li a { padding: 1.5rem; line-height: initial; }
+
+  .nav-menu.active {
+    transform: translateX(0);
+  }
+
+  .nav-menu li a {
+    padding: 1.5rem;
+    line-height: initial;
+  }
 }
+
 
 
 /* 3. Wrap your "main" QR area so it can center itself */
