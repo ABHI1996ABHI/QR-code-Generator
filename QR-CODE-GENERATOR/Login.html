@@ -4,7 +4,316 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login In / Sign Up</title>
-    <link href="Login.css" rel="stylesheet" >
+    <style>
+        /* Basic styling for the login page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .back-to-home {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .back-home-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-home-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .google-btn:hover {
+            border-color: #4285f4;
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.15);
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIyLjU2IDEyLjI1QzIyLjU2IDExLjQ3IDIyLjQ5IDEwLjcyIDIyLjM3IDEwSDEyVjE0LjI2SDE3LjkyQzE3LjY2IDE1LjYgMTYuOTQgMTYuNzQgMTUuODQgMTcuNVYyMC4yNEgxOS4zNkMyMS4zNiAxOC4zOSAyMi41NiAxNS41IDIyLjU2IDEyLjI1WiIgZmlsbD0iIzQyODVGNCIvPgo8cGF0aCBkPSJNMTIgMjIuMDNDMTUuMDQgMjIuMDMgMTcuNTggMjAuOTkgMTkuMzYgMTguMjRMMTUuODQgMTUuNUMxNC43IDE2LjEzIDEzLjI4IDE2LjUgMTIgMTYuNUM5LjExIDE2LjUgNi42NCAxNC40NiA1Ljg2IDExLjczTDIuMjQgMTQuNUM0LjAzIDE4LjA3IDcuNzMgMjAuNTMgMTIgMjAuNTNaIiBmaWxsPSIjMzRBODUzIi8+CjxwYXRoIGQ9Ik0yLjI0IDE0LjVMMi43IDE2LjVMMi4yNCAxOC40TDIuMjQgMTQuNVoiIGZpbGw9IiNGQkJDMDQiLz4KPHBhdGggZD0iTTEyIDkuNUMxMy4yNSA5LjUgMTQuMzkgOS45IDE1LjMxIDEwLjc5TDE4LjQ5IDcuNjFDMTcuNTggNi43NyAxNS4zNCA1LjkgMTIgNS45QzcuNzMgNS45IDQuMDMgOC4zNiAyLjI0IDExLjczTDUuODYgMTQuNDZDNi42NCAxMS43MyA5LjExIDkuNSAxMiA5LjVaIiBmaWxsPSIjRkJCQzA0Ii8+Cjwvc3ZnPgo=') no-repeat center;
+            background-size: contain;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 15px;
+            position: relative;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            user-select: none;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 2px;
+        }
+
+        .checkbox-group label {
+            line-height: 1.4;
+            color: #555;
+        }
+
+        .checkbox-group a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .form-switch {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-switch a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .form-switch a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #00b894, #00a085);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 0 10px;
+                padding: 30px 20px;
+            }
+            
+            .notification {
+                right: 10px;
+                left: 10px;
+                transform: translateY(-100px);
+            }
+            
+            .notification.show {
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Back to Homepage Button -->
@@ -75,7 +384,7 @@
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="agreeTerms" required>
-                    <label for="agreeTerms">I agree to the <a href="termsandcondition.html" target="_blank">Terms and Conditions</a> and <a href="privacypolicy.html" target="_blank">Privacy Policy</a>.</label>
+                    <label for="agreeTerms">I agree to the <a href="#" target="_blank">Terms and Conditions</a> and <a href="#" target="_blank">Privacy Policy</a>.</label>
                 </div>
                 <button type="submit" class="submit-btn">Create Account</button>
             </form>
@@ -109,7 +418,19 @@
     <script type="module">
         // Import the functions you need from the SDKs
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence, signOut } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            sendPasswordResetEmail, 
+            onAuthStateChanged, 
+            setPersistence, 
+            browserLocalPersistence, 
+            browserSessionPersistence, 
+            signOut 
+        } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -125,25 +446,23 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        
+        // Configure Google Provider with proper scopes
         const googleProvider = new GoogleAuthProvider();
+        googleProvider.addScope('email');
+        googleProvider.addScope('profile');
+        
+        // Set custom parameters for better UX
+        googleProvider.setCustomParameters({
+            prompt: 'select_account'
+        });
 
         // Configuration - Change this to your actual home page URL
-        const HOME_PAGE_URL = 'index.html'; // Change this to your actual home page
-        // Alternative: If you want to redirect to the same domain root, use:
-        // const HOME_PAGE_URL = window.location.origin;
+        const HOME_PAGE_URL = 'index.html';
 
         // Make auth and functions globally available
         window.auth = auth;
         window.googleProvider = googleProvider;
-        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-        window.signInWithPopup = signInWithPopup;
-        window.sendPasswordResetEmail = sendPasswordResetEmail;
-        window.onAuthStateChanged = onAuthStateChanged;
-        window.setPersistence = setPersistence;
-        window.browserLocalPersistence = browserLocalPersistence;
-        window.browserSessionPersistence = browserSessionPersistence;
-        window.signOut = signOut;
 
         // Back to Homepage function
         window.goToHomepage = function() {
@@ -201,7 +520,7 @@
             setTimeout(() => {
                 notification.classList.remove('show');
                 setTimeout(() => notification.innerHTML = '', 300); 
-            }, 1000); // Increased timeout for action notifications
+            }, 5000);
         }
 
         // Show/Hide loading spinner
@@ -222,6 +541,72 @@
                 console.error('Redirect failed:', error);
                 // Fallback redirect
                 window.location.replace(HOME_PAGE_URL);
+            }
+        }
+
+        // Enhanced Google Sign-In function with better error handling
+        window.signInWithGoogle = async function() {
+            console.log('Starting Google Sign-In...');
+            showLoading();
+            
+            try {
+                // Clear any previous auth state
+                if (auth.currentUser) {
+                    await signOut(auth);
+                }
+                
+                console.log('Attempting Google popup...');
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                
+                console.log("Google user signed in:", user);
+                console.log("Google credential:", credential);
+                
+                hideLoading();
+                showNotification('Signed in with Google successfully! Redirecting...', 'success');
+                
+                setTimeout(() => {
+                    redirectToHome();
+                }, 1500);
+                
+            } catch (error) {
+                hideLoading();
+                console.error("Detailed Google sign-in error:", error);
+                console.error("Error code:", error.code);
+                console.error("Error message:", error.message);
+                
+                let errorMessage = "Google sign-in failed.";
+                
+                switch (error.code) {
+                    case 'auth/cancelled-popup-request':
+                    case 'auth/popup-closed-by-user':
+                        errorMessage = 'Google sign-in was cancelled.';
+                        break;
+                    case 'auth/popup-blocked':
+                        errorMessage = 'Pop-up was blocked by your browser. Please allow pop-ups for this site and try again.';
+                        break;
+                    case 'auth/account-exists-with-different-credential':
+                        errorMessage = 'An account with this email already exists. Please sign in using a different method.';
+                        break;
+                    case 'auth/auth-domain-config-required':
+                        errorMessage = 'Authentication domain configuration is required. Please contact support.';
+                        break;
+                    case 'auth/operation-not-supported-in-this-environment':
+                        errorMessage = 'Google sign-in is not supported in this environment. Please use email/password instead.';
+                        break;
+                    case 'auth/unauthorized-domain':
+                        errorMessage = 'This domain is not authorized for Google sign-in. Please contact support.';
+                        break;
+                    case 'auth/web-storage-unsupported':
+                        errorMessage = 'Web storage is not supported. Please enable cookies and try again.';
+                        break;
+                    default:
+                        errorMessage = `Google sign-in failed: ${error.message}`;
+                        break;
+                }
+                
+                showNotification(errorMessage, 'error');
             }
         }
 
@@ -263,7 +648,7 @@
                         errorMessage = 'The email address is not valid.';
                         break;
                     case 'auth/operation-not-allowed':
-                        errorMessage = 'Email/password accounts are not enabled. Enable them in the Firebase Console Authentication settings.';
+                        errorMessage = 'Email/password accounts are not enabled.';
                         break;
                     case 'auth/weak-password':
                         errorMessage = 'The password is too weak. Please choose a stronger one.';
@@ -303,7 +688,7 @@
                 // Redirect after a short delay
                 setTimeout(() => {
                     redirectToHome();
-                }, 1000); // Reduced delay for better UX
+                }, 1000);
                 
             } catch (error) {
                 hideLoading();
@@ -312,7 +697,6 @@
                 
                 switch (error.code) {
                     case 'auth/user-not-found':
-                        // Show specific message for unregistered users with action button
                         const userEmail = document.getElementById('loginEmail').value;
                         showNotification(
                             'No account found with this email. Please create an account first.', 
@@ -347,44 +731,6 @@
             }
         }
 
-        window.signInWithGoogle = async function() {
-            showLoading();
-            try {
-                const result = await signInWithPopup(auth, googleProvider);
-                const user = result.user;
-                console.log("Google user signed in/created:", user);
-                hideLoading();
-                showNotification('Signed in with Google successfully! Redirecting...', 'success');
-                
-                setTimeout(() => {
-                    redirectToHome();
-                }, 1000);
-            } catch (error) {
-                hideLoading();
-                console.error("Error during Google sign-in:", error);
-                let errorMessage = "Google sign-in failed.";
-                
-                switch (error.code) {
-                    case 'auth/cancelled-popup-request':
-                    case 'auth/popup-closed-by-user':
-                        errorMessage = 'Google sign-in cancelled.';
-                        break;
-                    case 'auth/account-exists-with-different-credential':
-                        errorMessage = 'An account with this email already exists. Please sign in using a different method.';
-                        break;
-                    case 'auth/auth-domain-config-required':
-                    case 'auth/operation-not-supported-in-environment':
-                    case 'auth/unauthorized-domain':
-                        errorMessage = 'Google Auth is not correctly configured for this domain. Check Authorized Domains in Firebase Console.';
-                        break;
-                    default:
-                        errorMessage = `Google sign-in failed: ${error.message}`;
-                        break;
-                }
-                showNotification(errorMessage, 'error');
-            }
-        }
-
         async function handleForgotPassword(event) {
             event.preventDefault();
             const email = document.getElementById('resetEmail').value;
@@ -410,7 +756,7 @@
                         errorMessage = 'The email address is not valid.';
                         break;
                     case 'auth/user-not-found':
-                        errorMessage = 'No account found with this email address. Please create an account first.';
+                        errorMessage = 'No account found with this email address.';
                         break;
                     default:
                         errorMessage = `Failed to send reset email: ${error.message}`;
@@ -420,13 +766,10 @@
             }
         }
 
-        // Auth State Observer - Auto redirect if already logged in
+        // Auth State Observer
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 console.log("Auth state changed: User is signed in:", user);
-                // Optional: Auto-redirect if user is already logged in
-                // Uncomment the next line if you want immediate redirect for already logged-in users
-                // redirectToHome();
             } else {
                 console.log("Auth state changed: User is signed out.");
             }
@@ -434,6 +777,8 @@
 
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, setting up event listeners...');
+            
             document.getElementById('showCreateAccountLink').addEventListener('click', (e) => { e.preventDefault(); showCreateAccount(); });
             document.getElementById('showLoginLink').addEventListener('click', (e) => { e.preventDefault(); showLogin(); });
             document.getElementById('forgotPasswordLink').addEventListener('click', (e) => { e.preventDefault(); showForgotPassword(); });
@@ -442,6 +787,8 @@
             document.getElementById('loginFormElement').addEventListener('submit', handleLogin);
             document.getElementById('createFormElement').addEventListener('submit', handleCreateAccount);
             document.getElementById('forgotPasswordFormElement').addEventListener('submit', handleForgotPassword);
+            
+            console.log('Event listeners set up successfully');
         });
 
         // Optional: Sign out function for use elsewhere
