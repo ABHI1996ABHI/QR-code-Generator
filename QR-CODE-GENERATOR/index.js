@@ -43,18 +43,16 @@ function renderInputs(type) {
           <option value="nopass">No Password</option>
         </select>`;
       break;
-      case 'pdf':
-        html = `
-          <input type="file" id="pdfInput" class="form-control mb-3" accept="application/pdf">
-          <small class="text-muted">Select a PDF file to generate QR Code.</small>
-        `;
-        break;
-        
+    case 'pdf':
+      html = `
+        <input type="file" id="pdfInput" class="form-control mb-3" accept="application/pdf">
+        <small class="text-muted">Select a PDF file to generate QR Code.</small>`;
+      break;
   }
   qrInputs.innerHTML = html;
 }
 
-// Extend QR logic
+// Generate QR code
 function generateQR() {
   let qrText = '';
   switch (currentType) {
@@ -81,29 +79,24 @@ function generateQR() {
       const enc = document.getElementById('encryptionInput').value;
       qrText = `WIFI:T:${enc};S:${ssid};P:${password};;`;
       break;
-
-      case 'pdf':
-  const pdfFile = document.getElementById('pdfInput').files[0];
-  if (!pdfFile) return alert("Please upload a PDF file.");
-  
-  const pdfUrl = URL.createObjectURL(pdfFile); // creates a temporary link to the file
-  qrText = pdfUrl;
-  break;
-
-      
+    case 'pdf':
+      const pdfFile = document.getElementById('pdfInput').files[0];
+      if (!pdfFile) return alert("Please upload a PDF file.");
+      const pdfUrl = URL.createObjectURL(pdfFile);
+      qrText = pdfUrl;
+      break;
   }
 
   if (!qrText) return alert("Please fill in the required fields!");
 
   const qrCodeContainer = document.getElementById('qrcode');
   qrCodeContainer.innerHTML = '';
-  currentURL = qrText;
 
   const loaderModal = new bootstrap.Modal(document.getElementById('loaderModal'));
   loaderModal.show();
 
   setTimeout(() => {
-    currentQR = new QRCode(qrCodeContainer, {
+    new QRCode(qrCodeContainer, {
       text: qrText,
       width: 250,
       height: 250,
@@ -115,31 +108,44 @@ function generateQR() {
   }, 1000);
 }
 
-// Initial call
-renderInputs(currentType);
-
+// Download with white margin, high resolution, and sharp quality
 function downloadQR() {
-  const format = document.getElementById('formatSelect').value;    // "png" or "jpeg"
+  const format = document.getElementById('formatSelect').value;
   const qrContainer = document.getElementById('qrcode');
-  // First try to find an <img> (some browsers), otherwise a <canvas>
-  const img = qrContainer.querySelector('img');
   const canvas = qrContainer.querySelector('canvas');
-  if (!img && !canvas) {
+
+  if (!canvas) {
     return alert("Please generate a QR code first!");
   }
 
-  let dataUrl;
-  if (img) {
-    // QRCode.js sometimes outputs a data-URL img
-    dataUrl = img.src;
-  } else {
-    // Canvas output: for JPEG we need the MIME type set explicitly
-    dataUrl = canvas.toDataURL(
-      format === 'jpeg' ? 'image/jpeg' : 'image/png'
-    );
-  }
+  const originalSize = canvas.width;
+  const padding = 20;      // white space
+  const scale = 4;         // upscale
+  const finalSize = (originalSize + 2 * padding) * scale;
 
-  // Create a temporary link to trigger download
+  const paddedCanvas = document.createElement('canvas');
+  paddedCanvas.width = finalSize;
+  paddedCanvas.height = finalSize;
+
+  const ctx = paddedCanvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false; // keep QR crisp
+
+  // Fill background
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, finalSize, finalSize);
+
+  // Draw QR code into padded canvas
+  ctx.drawImage(
+    canvas,
+    0, 0, originalSize, originalSize,
+    padding * scale, padding * scale,
+    originalSize * scale, originalSize * scale
+  );
+
+  const dataUrl = paddedCanvas.toDataURL(
+    format === 'jpeg' ? 'image/jpeg' : 'image/png'
+  );
+
   const a = document.createElement('a');
   a.href = dataUrl;
   a.download = `qr-code.${format}`;
@@ -147,3 +153,17 @@ function downloadQR() {
   a.click();
   document.body.removeChild(a);
 }
+
+// Initial render
+renderInputs(currentType);
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+
+    hamburger.addEventListener('click', function () {
+      hamburger.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    });
+  });

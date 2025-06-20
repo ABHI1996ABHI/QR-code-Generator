@@ -273,3 +273,7 @@
         .notification.error {
             background: #ef4444;
         }
+        footer a:hover {
+  text-decoration: underline;
+  color: #f8f9fa;
+}
