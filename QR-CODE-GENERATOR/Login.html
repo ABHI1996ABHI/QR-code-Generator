@@ -120,6 +120,11 @@
         const auth = getAuth(app);
         const googleProvider = new GoogleAuthProvider();
 
+        // Configuration - Change this to your actual home page URL
+        const HOME_PAGE_URL = 'index.html'; // Change this to your actual home page
+        // Alternative: If you want to redirect to the same domain root, use:
+        // const HOME_PAGE_URL = window.location.origin;
+
         // Make auth and functions globally available
         window.auth = auth;
         window.googleProvider = googleProvider;
@@ -181,6 +186,18 @@
             document.getElementById('loading').classList.remove('show');
         }
 
+        // Redirect function with better error handling
+        function redirectToHome() {
+            try {
+                console.log('Redirecting to:', HOME_PAGE_URL);
+                window.location.href = HOME_PAGE_URL;
+            } catch (error) {
+                console.error('Redirect failed:', error);
+                // Fallback redirect
+                window.location.replace(HOME_PAGE_URL);
+            }
+        }
+
         // Firebase Authentication Handlers
         async function handleCreateAccount(event) {
             event.preventDefault();
@@ -240,6 +257,7 @@
 
             showLoading();
             try {
+                // Set persistence before signing in
                 if (rememberMe) {
                     await setPersistence(auth, browserLocalPersistence);
                 } else {
@@ -252,11 +270,14 @@
                 hideLoading();
                 showNotification('Login successful! Redirecting...', 'success');
                 
+                // Clear the form
+                document.getElementById('loginFormElement').reset();
+                
+                // Redirect after a short delay
                 setTimeout(() => {
-                    console.log('Redirect to dashboard');
-                window.location.href = 'https://thequickqr.com';
-                    document.getElementById('loginFormElement').reset();
-                }, 1500);
+                    redirectToHome();
+                }, 1000); // Reduced delay for better UX
+                
             } catch (error) {
                 hideLoading();
                 console.error("Error logging in:", error);
@@ -288,9 +309,8 @@
                 showNotification('Signed in with Google successfully! Redirecting...', 'success');
                 
                 setTimeout(() => {
-                    console.log('Redirect to dashboard after Google login');
-                    window.location.href = 'https://thequickqr.com';
-                }, 1500);
+                    redirectToHome();
+                }, 1000);
             } catch (error) {
                 hideLoading();
                 console.error("Error during Google sign-in:", error);
@@ -352,10 +372,13 @@
             }
         }
 
-        // Auth State Observer
+        // Auth State Observer - Auto redirect if already logged in
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 console.log("Auth state changed: User is signed in:", user);
+                // Optional: Auto-redirect if user is already logged in
+                // Uncomment the next line if you want immediate redirect for already logged-in users
+                // redirectToHome();
             } else {
                 console.log("Auth state changed: User is signed out.");
             }
@@ -378,7 +401,10 @@
             try {
                 await signOut(auth);
                 showNotification('Logged out successfully.', 'success');
-                window.location.href = 'https://thequickqr.com';
+                // Redirect to login page or home page after logout
+                setTimeout(() => {
+                    window.location.href = 'login.html'; // or wherever you want to redirect after logout
+                }, 1000);
             } catch (error) {
                 console.error("Error signing out:", error);
                 showNotification('Logout failed. Please try again.', 'error');
