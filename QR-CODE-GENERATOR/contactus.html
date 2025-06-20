@@ -163,6 +163,12 @@
             transform: translateY(-1px);
         }
         
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .contact-item {
             display: flex;
             align-items: center;
@@ -297,6 +303,21 @@
             display: none;
         }
         
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
         @media (max-width: 768px) {
             .content {
                 grid-template-columns: 1fr;
@@ -394,7 +415,7 @@
                         <textarea id="message" name="message" placeholder="Please describe your question or issue in detail..." required></textarea>
                     </div>
                     
-                    <button type="submit" class="submit-btn">Send Message</button>
+                    <button type="submit" class="submit-btn" id="submitBtn">Send Message</button>
                 </form>
             </div>
             
@@ -484,33 +505,63 @@
             </div>
         </div>
         
-        <a href="#" class="back-link">← Back to The QuickQR</a>
+        <a href="https://thequickqr.com" class="back-link">← Back to The QuickQR</a>
     </div>
-    
-    <script>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+        // TODO: Replace with your Firebase project configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyCROqgHyph59dt7iHdzbrThvNZzzKF8yA8",
+        authDomain: "qrcode-generator-693bb.firebaseapp.com",
+        projectId: "qrcode-generator-693bb",
+        storageBucket: "qrcode-generator-693bb.firebasestorage.app",
+        messagingSenderId: "672007661643",
+        appId: "1:672007661643:web:4d9ea14c813119df6185ce",
+        measurementId: "G-2Y1FSL4CLG"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
         // Form submission handling
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             // Get form data
             const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
+            const data = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                subject: formData.get('subject'),
+                message: formData.get('message'),
+                timestamp: serverTimestamp(),
+                status: 'new'
+            };
             
             // Show loading state
-            const submitBtn = document.querySelector('.submit-btn');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Sending...';
+            const submitBtn = document.getElementById('submitBtn');
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="loading-spinner"></span>Sending...';
             submitBtn.disabled = true;
             
-            // Simulate form submission (replace with actual API call)
-            setTimeout(() => {
-                // Reset button
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
+            // Hide any previous messages
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            try {
+                // Add document to Firestore
+                const docRef = await addDoc(collection(db, 'contact_messages'), data);
+                console.log('Document written with ID: ', docRef.id);
                 
                 // Show success message
                 document.getElementById('successMessage').style.display = 'block';
-                document.getElementById('errorMessage').style.display = 'none';
                 
                 // Reset form
                 this.reset();
@@ -520,19 +571,23 @@
                     document.getElementById('successMessage').style.display = 'none';
                 }, 5000);
                 
-                // Log form data (for development - remove in production)
-                console.log('Form submitted:', data);
+            } catch (error) {
+                console.error('Error adding document: ', error);
                 
-                // In a real application, you would send this data to your server:
-                // fetch('/api/contact', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify(data)
-                // })
+                // Show error message
+                document.getElementById('errorMessage').style.display = 'block';
                 
-            }, 1500);
+                // Hide error message after 5 seconds
+                setTimeout(() => {
+                    document.getElementById('errorMessage').style.display = 'none';
+                }, 5000);
+            } finally {
+                // Reset button
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+            }
         });
-        
+
         // Add smooth animations to form inputs
         document.querySelectorAll('input, select, textarea').forEach(input => {
             input.addEventListener('focus', function() {
