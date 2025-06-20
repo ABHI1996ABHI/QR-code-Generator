@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - The QuickQR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 0.9rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            opacity: 0.8;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .page-title {
+            text-align: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* FAQ Styles */
+        .faq-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 1.5rem 0;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: #667eea;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question.active::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .faq-answer.active {
+            max-height: 500px;
+            padding-bottom: 1.5rem;
+        }
+
+        .faq-answer p {
+            margin-bottom: 1rem;
+        }
+
+        .faq-answer p:last-child {
+            margin-bottom: 0;
+        }
+
+        .faq-answer ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-answer li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Search Box */
+        .search-container {
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box:focus {
+            border-color: #667eea;
+        }
+
+        .search-box::placeholder {
+            color: #999;
+        }
+
+        /* Category Filters */
+        .category-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .main-content {
+                padding: 2rem 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .faq-container {
+                padding: 1.5rem;
+            }
+
+            .category-filters {
+                justify-content: center;
+            }
+
+            .category-btn {
+                font-size: 0.9rem;
+            }
+        }
+
+        .highlight {
+            background: yellow;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">QR</div>
+                <span>The QuickQR</span>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#" class="active">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Sign-Up / Log-In</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">Frequently Asked Questions</h1>
+        <p class="page-subtitle">Everything you need to know about QuickQR</p>
+
+        <div class="faq-container">
+            <!-- Search Box -->
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Search for questions..." id="searchBox">
+            </div>
+
+            <!-- Category Filters -->
+            <div class="category-filters">
+                <button class="category-btn active" data-category="all">All</button>
+                <button class="category-btn" data-category="general">General</button>
+                <button class="category-btn" data-category="technical">Technical</button>
+                <button class="category-btn" data-category="pricing">Pricing</button>
+                <button class="category-btn" data-category="security">Security</button>
+            </div>
+
+            <!-- FAQ Items -->
+            <div class="faq-items">
+                <div class="faq-item" data-category="general">
+                    <button class="faq-question">
+                        What is QuickQR and how does it work?
+                    </button>
+                    <div class="faq-answer">
+                        <p>QuickQR is a free, unlimited QR code generator that allows you to create QR codes for various types of content without any restrictions. Simply enter your URL, text, email, phone number, SMS, or Wi-Fi credentials, click "Generate QR Code," and download your custom QR code instantly.</p>
+                        <p>Our service supports multiple formats including PNG, JPG, SVG, and PDF, making it easy to use your QR codes across different platforms and media.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="general">
+                    <button class="faq-question">
+                        Is QuickQR really free with no limits?
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! QuickQR is completely free with no hidden fees, no registration required, and no limits on the number of QR codes you can generate. We believe QR code generation should be accessible to everyone.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <button class="faq-question">
+                        What types of QR codes can I create?
+                    </button>
+                    <div class="faq-answer">
+                        <p>QuickQR supports multiple QR code types:</p>
+                        <ul>
+                            <li><strong>URL:</strong> Website links and web pages</li>
+                            <li><strong>Text:</strong> Plain text messages</li>
+                            <li><strong>Email:</strong> Email addresses with optional subject and body</li>
+                            <li><strong>Phone:</strong> Phone numbers for direct calling</li>
+                            <li><strong>SMS:</strong> Pre-filled text messages</li>
+                            <li><strong>Wi-Fi:</strong> Network credentials for easy connection</li>
+                            <li><strong>PDF:</strong> Document links and file sharing</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <button class="faq-question">
+                        What file formats are available for download?
+                    </button>
+                    <div class="faq-answer">
+                        <p>QuickQR offers multiple download formats to suit your needs:</p>
+                        <ul>
+                            <li><strong>PNG:</strong> High-quality raster image, perfect for web and print</li>
+                            <li><strong>JPG:</strong> Compressed format for smaller file sizes</li>
+                            <li><strong>SVG:</strong> Vector format that scales without quality loss</li>
+                            <li><strong>PDF:</strong> Document format ideal for professional printing</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <button class="faq-question">
+                        How do I create a Wi-Fi QR code?
+                    </button>
+                    <div class="faq-answer">
+                        <p>Creating a Wi-Fi QR code is simple:</p>
+                        <ul>
+                            <li>Select the "Wi-Fi" option from the tabs</li>
+                            <li>Enter your network name (SSID)</li>
+                            <li>Choose your security type (WPA/WPA2, WEP, or None)</li>
+                            <li>Enter your network password</li>
+                            <li>Click "Generate QR Code"</li>
+                        </ul>
+                        <p>When someone scans the QR code, their device will automatically connect to your Wi-Fi network without manually entering credentials.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="security">
+                    <button class="faq-question">
+                        Are my QR codes secure and private?
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes, your privacy is our priority. QuickQR processes QR code generation entirely on the client-side, meaning your data never leaves your browser. We don't store, track, or have access to the content you encode in your QR codes.</p>
+                        <p>However, remember that QR codes themselves are not encrypted - anyone who scans your QR code will be able to see the encoded information.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <button class="faq-question">
+                        What's the maximum amount of data I can encode?
+                    </button>
+                    <div class="faq-answer">
+                        <p>QR codes have inherent limitations based on the type of data:</p>
+                        <ul>
+                            <li><strong>Numeric data:</strong> Up to 7,089 characters</li>
+                            <li><strong>Alphanumeric data:</strong> Up to 4,296 characters</li>
+                            <li><strong>Binary data:</strong> Up to 2,953 bytes</li>
+                            <li><strong>Kanji characters:</strong> Up to 1,817 characters</li>
+                        </ul>
+                        <p>For URLs, we recommend keeping them under 2,000 characters for optimal scanning performance.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="general">
+                    <button class="faq-question">
+                        Do I need to create an account to use QuickQR?
+                    </button>
+                    <div class="faq-answer">
+                        <p>No account required! QuickQR works completely without registration. Just visit our website, enter your content, and generate your QR code instantly. This ensures your privacy and makes the service immediately accessible.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <button class="faq-question">
+                        Can I customize the appearance of my QR codes?
+                    </button>
+                    <div class="faq-answer">
+                        <p>Currently, QuickQR generates standard black and white QR codes optimized for maximum compatibility and readability. We're working on adding customization features like colors, logos, and different styles in future updates.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="general">
+                    <button class="faq-question">
+                        How do I scan a QR code?
+                    </button>
+                    <div class="faq-answer">
+                        <p>Most modern smartphones can scan QR codes natively:</p>
+                        <ul>
+                            <li><strong>iPhone:</strong> Open the Camera app and point it at the QR code</li>
+                            <li><strong>Android:</strong> Open the Camera app or use Google Lens</li>
+                            <li><strong>Dedicated apps:</strong> Download a QR code scanner from your app store</li>
+                        </ul>
+                        <p>The device will automatically detect the QR code and display the encoded information or take the appropriate action.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="pricing">
+                    <button class="faq-question">
+                        Will QuickQR always be free?
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes, our core QR code generation service will always remain free. We may introduce premium features in the future (like advanced customization or analytics), but the basic functionality of creating and downloading QR codes will never require payment.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <button class="faq-question">
+                        What should I do if my QR code isn't scanning properly?
+                    </button>
+                    <div class="faq-answer">
+                        <p>If your QR code isn't scanning well, try these solutions:</p>
+                        <ul>
+                            <li>Ensure good lighting when scanning</li>
+                            <li>Hold the camera steady and at an appropriate distance</li>
+                            <li>Check that the QR code isn't damaged or distorted</li>
+                            <li>Try a different QR code scanner app</li>
+                            <li>For very long URLs, consider using a URL shortener first</li>
+                            <li>Ensure the printed QR code has sufficient contrast</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="general">
+                    <button class="faq-question">
+                        Can I use QuickQR for commercial purposes?
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely! QuickQR is free for both personal and commercial use. You can use our generated QR codes in your business materials, marketing campaigns, products, or any commercial application without any restrictions or licensing fees.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <button class="faq-question">
+                        Do QR codes expire?
+                    </button>
+                    <div class="faq-answer">
+                        <p>QR codes themselves never expire - they're just a way to encode information. However, the content they point to might become unavailable:</p>
+                        <ul>
+                            <li>URLs might lead to pages that are removed or moved</li>
+                            <li>Phone numbers might be disconnected</li>
+                            <li>Email addresses might be deactivated</li>
+                        </ul>
+                        <p>The QR code will continue to work as long as the underlying content remains accessible.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // FAQ Toggle Functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isActive = question.classList.contains('active');
+
+                // Close all other FAQ items
+                document.querySelectorAll('.faq-question').forEach(q => {
+                    q.classList.remove('active');
+                    q.nextElementSibling.classList.remove('active');
+                });
+
+                // Toggle current item
+                if (!isActive) {
+                    question.classList.add('active');
+                    answer.classList.add('active');
+                }
+            });
+        });
+
+        // Category Filter Functionality
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.dataset.category;
+
+                // Update active button
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Filter FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    if (category === 'all' || item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // Close all open FAQ items when filtering
+                document.querySelectorAll('.faq-question').forEach(q => {
+                    q.classList.remove('active');
+                    q.nextElementSibling.classList.remove('active');
+                });
+            });
+        });
+
+        // Search Functionality
+        const searchBox = document.getElementById('searchBox');
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        searchBox.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    
+                    // Highlight search terms
+                    if (searchTerm) {
+                        highlightText(item, searchTerm);
+                    } else {
+                        removeHighlight(item);
+                    }
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Reset category filter when searching
+            if (searchTerm) {
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.category === 'all') {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+        });
+
+        function highlightText(element, searchTerm) {
+            const walker = document.createTreeWalker(
+                element,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            const textNodes = [];
+            let node;
+            while (node = walker.nextNode()) {
+                textNodes.push(node);
+            }
+
+            textNodes.forEach(textNode => {
+                const parent = textNode.parentNode;
+                if (parent.tagName !== 'SCRIPT' && parent.tagName !== 'STYLE') {
+                    const text = textNode.textContent;
+                    const regex = new RegExp(`(${searchTerm})`, 'gi');
+                    if (regex.test(text)) {
+                        const highlightedText = text.replace(regex, '<span class="highlight">$1</span>');
+                        const wrapper = document.createElement('div');
+                        wrapper.innerHTML = highlightedText;
+                        parent.replaceChild(wrapper, textNode);
+                        parent.innerHTML = parent.innerHTML;
+                    }
+                }
+            });
+        }
+
+        function removeHighlight(element) {
+            const highlights = element.querySelectorAll('.highlight');
+            highlights.forEach(highlight => {
+                const parent = highlight.parentNode;
+                parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+                parent.normalize();
+            });
+        }
+    </script>
+</body>
+</html>
