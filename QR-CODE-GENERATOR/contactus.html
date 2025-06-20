@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - The QuickQR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #5b73e8 0%, #6f42c1 100%);
+            color: white;
+            padding: 60px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            50% { transform: translate(-50%, -50%) rotate(180deg); }
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+        
+        .contact-form-section {
+            padding: 50px 40px;
+            background: #f8f9fa;
+        }
+        
+        .contact-info-section {
+            padding: 50px 40px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            color: #5b73e8;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .section-subtitle {
+            color: #6c757d;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #5b73e8;
+            box-shadow: 0 0 0 3px rgba(91, 115, 232, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #5b73e8 0%, #6f42c1 100%);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(91, 115, 232, 0.3);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 4px solid #5b73e8;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #5b73e8 0%, #6f42c1 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .contact-details h3 {
+            color: #495057;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .contact-details p {
+            color: #6c757d;
+            margin: 0;
+        }
+        
+        .contact-details a {
+            color: #5b73e8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .contact-details a:hover {
+            text-decoration: underline;
+        }
+        
+        .faq-section {
+            background: #f8f9fa;
+            padding: 50px 40px;
+            grid-column: 1 / -1;
+        }
+        
+        .faq-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #5b73e8;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+        
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .faq-question {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .faq-answer {
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: #5b73e8;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 25px;
+            margin: 30px 40px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            background: #4c63d2;
+            transform: translateY(-2px);
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #dc3545;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .contact-form-section,
+            .contact-info-section {
+                padding: 30px 20px;
+            }
+            
+            .faq-section {
+                padding: 30px 20px;
+            }
+            
+            .faq-title {
+                font-size: 2rem;
+            }
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Contact Us</h1>
+            <p>We're here to help! Get in touch with The QuickQR team</p>
+        </div>
+        
+        <div class="content">
+            <div class="contact-form-section">
+                <h2 class="section-title">Send us a Message</h2>
+                <p class="section-subtitle">Have a question or need support? Fill out the form below and we'll get back to you within 24 hours.</p>
+                
+                <div class="success-message" id="successMessage">
+                    ✅ Thank you! Your message has been sent successfully. We'll get back to you soon.
+                </div>
+                
+                <div class="error-message" id="errorMessage">
+                    ❌ Sorry, there was an error sending your message. Please try again or contact us directly.
+                </div>
+                
+                <form id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name <span class="required">*</span></label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Last Name <span class="required">*</span></label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject <span class="required">*</span></label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a topic...</option>
+                            <option value="technical-support">Technical Support</option>
+                            <option value="account-help">Account Help</option>
+                            <option value="billing">Billing Question</option>
+                            <option value="feature-request">Feature Request</option>
+                            <option value="bug-report">Bug Report</option>
+                            <option value="partnership">Partnership Inquiry</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message <span class="required">*</span></label>
+                        <textarea id="message" name="message" placeholder="Please describe your question or issue in detail..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+            
+            <div class="contact-info-section">
+                <h2 class="section-title">Get in Touch</h2>
+                <p class="section-subtitle">Prefer to contact us directly? Here are all the ways to reach our team.</p>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <div class="contact-details">
+                        <h3>Email Support</h3>
+                        <p><a href="mailto:support@thequickqr.com">support@thequickqr.com</a></p>
+                        <p>We respond within 24 hours</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">💬</div>
+                    <div class="contact-details">
+                        <h3>Live Chat</h3>
+                        <p>Available 9 AM - 6 PM EST</p>
+                        <p>Monday through Friday</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">🐛</div>
+                    <div class="contact-details">
+                        <h3>Bug Reports</h3>
+                        <p><a href="mailto:bugs@thequickqr.com">bugs@thequickqr.com</a></p>
+                        <p>Help us improve the service</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">🤝</div>
+                    <div class="contact-details">
+                        <h3>Business Inquiries</h3>
+                        <p><a href="mailto:business@thequickqr.com">business@thequickqr.com</a></p>
+                        <p>Partnerships & Enterprise</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">🛡️</div>
+                    <div class="contact-details">
+                        <h3>Privacy & Security</h3>
+                        <p><a href="mailto:privacy@thequickqr.com">privacy@thequickqr.com</a></p>
+                        <p>Data protection inquiries</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="faq-section">
+            <h2 class="faq-title">Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">How do I create a QR code?</div>
+                    <div class="faq-answer">Simply enter your URL, text, or other data in the input field, select your preferred format, and click "Generate QR Code". Your QR code will be created instantly and ready for download.</div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Are QR codes free to generate?</div>
+                    <div class="faq-answer">Yes! The QuickQR offers free QR code generation for personal use. Premium features and bulk generation options are available for business users.</div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">What formats can I download?</div>
+                    <div class="faq-answer">You can download your QR codes in PNG, JPG, SVG, and PDF formats. Each format is optimized for different use cases - PNG for web, SVG for scalability, and PDF for printing.</div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Do QR codes expire?</div>
+                    <div class="faq-answer">Static QR codes (like URLs and text) never expire. However, the content they point to (like websites) might change. Dynamic QR codes in premium accounts can be updated without changing the code itself.</div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Is my data secure?</div>
+                    <div class="faq-answer">Absolutely. We use HTTPS encryption for all data transmission, and we don't store your QR code content permanently. Check our Privacy Policy for complete details on data handling.</div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Can I track QR code scans?</div>
+                    <div class="faq-answer">Scan tracking is available with our premium accounts. This feature provides insights into when, where, and how often your QR codes are scanned.</div>
+                </div>
+            </div>
+        </div>
+        
+        <a href="#" class="back-link">← Back to The QuickQR</a>
+    </div>
+    
+    <script>
+        // Form submission handling
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Show loading state
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            
+            // Simulate form submission (replace with actual API call)
+            setTimeout(() => {
+                // Reset button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                // Show success message
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('errorMessage').style.display = 'none';
+                
+                // Reset form
+                this.reset();
+                
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    document.getElementById('successMessage').style.display = 'none';
+                }, 5000);
+                
+                // Log form data (for development - remove in production)
+                console.log('Form submitted:', data);
+                
+                // In a real application, you would send this data to your server:
+                // fetch('/api/contact', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(data)
+                // })
+                
+            }, 1500);
+        });
+        
+        // Add smooth animations to form inputs
+        document.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+        
+        // FAQ item hover effects
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.borderLeft = '4px solid #5b73e8';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.borderLeft = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
