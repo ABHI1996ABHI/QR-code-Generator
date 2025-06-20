@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookies Policy - The QuickQR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #5b73e8 0%, #6f42c1 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .last-updated {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #5b73e8;
+        }
+        
+        h2 {
+            color: #5b73e8;
+            font-size: 1.5rem;
+            margin: 30px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        h3 {
+            color: #495057;
+            font-size: 1.2rem;
+            margin: 20px 0 10px 0;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight-box {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .contact-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: #5b73e8;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 20px;
+            margin-left: 30px;
+            transition: background 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: #4c63d2;
+        }
+        
+        strong {
+            color: #495057;
+        }
+        
+        .cookies-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+        
+        .cookies-table th,
+        .cookies-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        .cookies-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .cookie-category {
+            background: #e9ecef;
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .toggle-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toggle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #5b73e8;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .browser-guide {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .browser-guide h4 {
+            color: #5b73e8;
+            margin-bottom: 10px;
+        }
+        
+        .browser-guide ul {
+            margin-left: 0;
+            list-style: none;
+        }
+        
+        .browser-guide li {
+            background: white;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 3px solid #5b73e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Cookies Policy</h1>
+            <p>How The QuickQR Uses Cookies and Tracking Technologies</p>
+        </div>
+
+        <a href="https://thequickqr.com" class="back-link">← Back to The QuickQR</a>
+        
+        <div class="content">
+            <div class="last-updated">
+                <strong>Last Updated:</strong> June 14, 2025
+            </div>
+            
+            <div class="highlight-box">
+                <p><strong>Quick Summary:</strong> We use cookies to make our QR code generation service work better for you. This includes remembering your preferences, keeping you logged in, and understanding how our service is used to make improvements.</p>
+            </div>
+            
+            <h2>1. What Are Cookies?</h2>
+            <p>Cookies are small text files that are stored on your device (computer, tablet, or mobile) when you visit our website. They help us remember information about your visit, which can make it easier to visit our site again and make the service more useful to you.</p>
+            
+            <p>Similar technologies include:</p>
+            <ul>
+                <li><strong>Web beacons:</strong> Small graphic images that help us analyze website usage</li>
+                <li><strong>Local storage:</strong> Technology that stores data locally on your device</li>
+                <li><strong>Session storage:</strong> Temporary storage that lasts only for your browser session</li>
+                <li><strong>Pixels:</strong> Tiny images used for tracking and analytics</li>
+            </ul>
+            
+            <h2>2. Why We Use Cookies</h2>
+            <p>The QuickQR uses cookies for several important purposes:</p>
+            <ul>
+                <li><strong>Essential functionality:</strong> To make our QR code generator work properly</li>
+                <li><strong>User authentication:</strong> To keep you logged in to your account</li>
+                <li><strong>Preferences:</strong> To remember your settings and choices</li>
+                <li><strong>Security:</strong> To protect against fraud and unauthorized access</li>
+                <li><strong>Analytics:</strong> To understand how our service is used and improve it</li>
+                <li><strong>Performance:</strong> To optimize loading times and user experience</li>
+            </ul>
+            
+            <h2>3. Types of Cookies We Use</h2>
+            
+            <h3>3.1 Essential Cookies</h3>
+            <div class="warning-box">
+                <p><strong>Important:</strong> These cookies are necessary for the website to function and cannot be switched off. They are usually only set in response to actions made by you which amount to a request for services.</p>
+            </div>
+            
+            <table class="cookies-table">
+                <tr>
+                    <th>Cookie Name</th>
+                    <th>Purpose</th>
+                    <th>Duration</th>
+                    <th>Type</th>
+                </tr>
+                <tr class="cookie-category">
+                    <td colspan="4">Authentication & Security</td>
+                </tr>
+                <tr>
+                    <td>session_token</td>
+                    <td>Maintains your login session</td>
+                    <td>Session</td>
+                    <td>HTTP Only</td>
+                </tr>
+                <tr>
+                    <td>csrf_token</td>
+                    <td>Protects against cross-site request forgery</td>
+                    <td>Session</td>
+                    <td>Secure</td>
+                </tr>
+                <tr>
+                    <td>auth_remember</td>
+                    <td>Remembers login for "Remember Me" feature</td>
+                    <td>30 days</td>
+                    <td>Secure</td>
+                </tr>
+                <tr class="cookie-category">
+                    <td colspan="4">Functionality</td>
+                </tr>
+                <tr>
+                    <td>user_preferences</td>
+                    <td>Stores your QR code format preferences</td>
+                    <td>1 year</td>
+                    <td>Functional</td>
+                </tr>
+                <tr>
+                    <td>theme_setting</td>
+                    <td>Remembers your theme choice (light/dark)</td>
+                    <td>1 year</td>
+                    <td>Functional</td>
+                </tr>
+                <tr>
+                    <td>language_pref</td>
+                    <td>Stores your language preference</td>
+                    <td>1 year</td>
+                    <td>Functional</td>
+                </tr>
+            </table>
+            
+            <h3>3.2 Performance & Analytics Cookies</h3>
+            <div class="toggle-section">
+                <div class="toggle-header">
+                    <div>
+                        <h4>Performance Cookies</h4>
+                        <p>Help us understand how visitors interact with our website</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <table class="cookies-table">
+                    <tr>
+                        <th>Cookie Name</th>
+                        <th>Purpose</th>
+                        <th>Duration</th>
+                        <th>Provider</th>
+                    </tr>
+                    <tr>
+                        <td>_ga</td>
+                        <td>Google Analytics - distinguishes users</td>
+                        <td>2 years</td>
+                        <td>Google</td>
+                    </tr>
+                    <tr>
+                        <td>_ga_[ID]</td>
+                        <td>Google Analytics - session tracking</td>
+                        <td>2 years</td>
+                        <td>Google</td>
+                    </tr>
+                    <tr>
+                        <td>usage_stats</td>
+                        <td>Tracks QR code generation statistics</td>
+                        <td>90 days</td>
+                        <td>The QuickQR</td>
+                    </tr>
+                    <tr>
+                        <td>page_performance</td>
+                        <td>Monitors page load times</td>
+                        <td>7 days</td>
+                        <td>The QuickQR</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <h3>3.3 Marketing & Advertising Cookies</h3>
+            <div class="toggle-section">
+                <div class="toggle-header">
+                    <div>
+                        <h4>Marketing Cookies</h4>
+                        <p>Used to track visitors across websites for marketing purposes</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <table class="cookies-table">
+                    <tr>
+                        <th>Cookie Name</th>
+                        <th>Purpose</th>
+                        <th>Duration</th>
+                        <th>Provider</th>
+                    </tr>
+                    <tr>
+                        <td>_fbp</td>
+                        <td>Facebook Pixel for advertising</td>
+                        <td>90 days</td>
+                        <td>Facebook</td>
+                    </tr>
+                    <tr>
+                        <td>_gcl_au</td>
+                        <td>Google Ads conversion tracking</td>
+                        <td>90 days</td>
+                        <td>Google</td>
+                    </tr>
+                    <tr>
+                        <td>campaign_source</td>
+                        <td>Tracks marketing campaign effectiveness</td>
+                        <td>30 days</td>
+                        <td>The QuickQR</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <h2>4. Third-Party Cookies</h2>
+            <p>Some cookies are placed by third-party services that appear on our pages. We use the following third-party services:</p>
+            
+            <ul>
+                <li><strong>Google Analytics:</strong> For website analytics and user behavior insights</li>
+                <li><strong>Google Fonts:</strong> For typography and font loading</li>
+                <li><strong>Cloudflare:</strong> For content delivery and security</li>
+                <li><strong>Facebook Pixel:</strong> For advertising and conversion tracking (if enabled)</li>
+                <li><strong>Google Ads:</strong> For advertising measurement (if enabled)</li>
+            </ul>
+            
+            <p>These third parties may use cookies to collect information about your online activities across different websites over time.</p>
+            
+            <h2>5. How to Control Cookies</h2>
+            
+            <h3>5.1 Browser Settings</h3>
+            <div class="browser-guide">
+                <h4>Popular Browser Cookie Controls:</h4>
+                <ul>
+                    <li><strong>Chrome:</strong> Settings → Privacy and Security → Cookies and other site data</li>
+                    <li><strong>Firefox:</strong> Settings → Privacy & Security → Cookies and Site Data</li>
+                    <li><strong>Safari:</strong> Preferences → Privacy → Manage Website Data</li>
+                    <li><strong>Edge:</strong> Settings → Cookies and site permissions → Cookies and site data</li>
+                    <li><strong>Opera:</strong> Settings → Advanced → Privacy & Security → Site Settings</li>
+                </ul>
+            </div>
+            
+            <h3>5.2 Our Cookie Preference Center</h3>
+            <p>You can manage your cookie preferences directly on our website using our cookie preference center. This allows you to:</p>
+            <ul>
+                <li>Accept or reject non-essential cookies</li>
+                <li>Change your preferences at any time</li>
+                <li>View detailed information about each cookie category</li>
+                <li>Withdraw consent for previously accepted cookies</li>
+            </ul>
+            
+            <h3>5.3 Opt-Out Links</h3>
+            <p>For specific third-party services, you can opt out directly:</p>
+            <ul>
+                <li><strong>Google Analytics:</strong> <a href="https://tools.google.com/dlpage/gaoptout" target="_blank">Google Analytics Opt-out</a></li>
+                <li><strong>Google Ads:</strong> <a href="https://adssettings.google.com" target="_blank">Google Ad Settings</a></li>
+                <li><strong>Facebook:</strong> <a href="https://www.facebook.com/settings?tab=ads" target="_blank">Facebook Ad Preferences</a></li>
+            </ul>
+            
+            <h2>6. Impact of Disabling Cookies</h2>
+            <div class="warning-box">
+                <p><strong>Please Note:</strong> If you disable cookies, some features of The QuickQR may not work properly:</p>
+                <ul>
+                    <li>You may need to log in repeatedly</li>
+                    <li>Your preferences won't be saved</li>
+                    <li>Some QR code generation features may be limited</li>
+                    <li>We won't be able to remember your settings</li>
+                </ul>
+            </div>
+            
+            <h2>7. Mobile App Tracking</h2>
+            <p>If you use our mobile app, we may use similar tracking technologies including:</p>
+            <ul>
+                <li><strong>Device identifiers:</strong> Unique identifiers for your mobile device</li>
+                <li><strong>App analytics:</strong> To understand how the app is used</li>
+                <li><strong>Push notification tokens:</strong> To send you relevant notifications</li>
+                <li><strong>Crash reporting:</strong> To identify and fix technical issues</li>
+            </ul>
+            
+            <h2>8. International Transfers</h2>
+            <p>Some of our third-party cookie providers may transfer data internationally. We ensure that appropriate safeguards are in place, including:</p>
+            <ul>
+                <li>EU-US Data Privacy Framework compliance</li>
+                <li>Standard Contractual Clauses (SCCs)</li>
+                <li>Adequacy decisions by relevant authorities</li>
+            </ul>
+            
+            <h2>9. Children's Privacy</h2>
+            <p>Our service is not intended for children under 13, and we do not knowingly collect information from children through cookies. If we discover that we have collected such information, we will delete it immediately.</p>
+            
+            <h2>10. Updates to This Policy</h2>
+            <p>We may update this Cookies Policy from time to time to reflect changes in technology, legislation, or our practices. When we make changes, we will:</p>
+            <ul>
+                <li>Update the "Last Updated" date at the top of this policy</li>
+                <li>Notify you through our website or email (for significant changes)</li>
+                <li>Ask for your renewed consent where required by law</li>
+            </ul>
+            
+            <h2>11. Contact Us</h2>
+            <div class="contact-info">
+                <p><strong>If you have any questions about our use of cookies, please contact us:</strong></p>
+                <p><strong>Email:</strong> cookies@thequickqr.com</p>
+                <p><strong>Privacy Team:</strong> privacy@thequickqr.com</p>
+                <p><strong>Address:</strong> [Your Business Address]</p>
+                <p><strong>Phone:</strong> [Your Contact Number]</p>
+            </div>
+            
+            <div class="highlight-box">
+                <p><strong>Your Consent:</strong> By continuing to use The QuickQR, you consent to our use of cookies as described in this policy. You can withdraw your consent at any time through your browser settings or our cookie preference center.</p>
+            </div>
+            
+            
+        </div>
+    </div>
+    
+    <script>
+        // Simple toggle functionality for cookie preferences
+        document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const section = this.closest('.toggle-section');
+                const isEnabled = this.checked;
+                
+                // Visual feedback
+                if (isEnabled) {
+                    section.style.opacity = '1';
+                } else {
+                    section.style.opacity = '0.7';
+                }
+                
+                // Here you would typically save the preference
+                console.log(`Cookie category ${section.querySelector('h4').textContent} is now ${isEnabled ? 'enabled' : 'disabled'}`);
+            });
+        });
+    </script>
+</body>
+</html>

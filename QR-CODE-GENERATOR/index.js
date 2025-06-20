@@ -48,6 +48,7 @@ function renderInputs(type) {
       break;
     case 'pdf':
       html = `
+<<<<<<< HEAD
         <input type="file" id="pdfInput" class="form-control mb-2" accept="application/pdf">
         <div class="progress my-2" style="height: 20px;">
           <div id="uploadProgress" class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%">0%</div>
@@ -77,6 +78,10 @@ function renderInputs(type) {
         </div>
         <button id="cancelUploadBtn" class="btn btn-sm btn-danger mb-2 d-none">Cancel Upload</button>
       `;
+=======
+        <input type="file" id="pdfInput" class="form-control mb-3" accept="application/pdf">
+        <small class="text-muted">Select a PDF file to generate QR Code.</small>`;
+>>>>>>> dcef9420473a351e6e959149e92d028635862392
       break;
   }
 
@@ -96,8 +101,13 @@ function renderInputs(type) {
   }
 }
 
+<<<<<<< HEAD
 // Extend QR logic
 async function generateQR() {
+=======
+// Generate QR code
+function generateQR() {
+>>>>>>> dcef9420473a351e6e959149e92d028635862392
   let qrText = '';
   const qrCodeContainer = document.getElementById('qrcode');
   qrCodeContainer.innerHTML = '';
@@ -129,6 +139,7 @@ async function generateQR() {
       const enc = document.getElementById('encryptionInput').value;
       qrText = `WIFI:T:${enc};S:${ssid};P:${password};;`;
       break;
+<<<<<<< HEAD
 
     case 'pdf':
     case 'menu':
@@ -196,6 +207,13 @@ async function generateQR() {
           return alert("Please enter the menu URL.");
         }
       }
+=======
+    case 'pdf':
+      const pdfFile = document.getElementById('pdfInput').files[0];
+      if (!pdfFile) return alert("Please upload a PDF file.");
+      const pdfUrl = URL.createObjectURL(pdfFile);
+      qrText = pdfUrl;
+>>>>>>> dcef9420473a351e6e959149e92d028635862392
       break;
   }
 
@@ -204,7 +222,12 @@ async function generateQR() {
     return alert("Please fill in the required fields!");
   }
 
+<<<<<<< HEAD
   currentURL = qrText;
+=======
+  const qrCodeContainer = document.getElementById('qrcode');
+  qrCodeContainer.innerHTML = '';
+>>>>>>> dcef9420473a351e6e959149e92d028635862392
 
   setTimeout(() => {
     new QRCode(qrCodeContainer, {
@@ -221,6 +244,7 @@ async function generateQR() {
   }, 500);
 }
 
+<<<<<<< HEAD
 // Initial render
 renderInputs(currentType);
 
@@ -233,6 +257,46 @@ function downloadQR() {
   if (!img && !canvas) return alert("Please generate a QR code first!");
 
   let dataUrl = img ? img.src : canvas.toDataURL(format === 'jpeg' ? 'image/jpeg' : 'image/png');
+=======
+// Download with white margin, high resolution, and sharp quality
+function downloadQR() {
+  const format = document.getElementById('formatSelect').value;
+  const qrContainer = document.getElementById('qrcode');
+  const canvas = qrContainer.querySelector('canvas');
+
+  if (!canvas) {
+    return alert("Please generate a QR code first!");
+  }
+
+  const originalSize = canvas.width;
+  const padding = 20;      // white space
+  const scale = 4;         // upscale
+  const finalSize = (originalSize + 2 * padding) * scale;
+
+  const paddedCanvas = document.createElement('canvas');
+  paddedCanvas.width = finalSize;
+  paddedCanvas.height = finalSize;
+
+  const ctx = paddedCanvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false; // keep QR crisp
+
+  // Fill background
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, finalSize, finalSize);
+
+  // Draw QR code into padded canvas
+  ctx.drawImage(
+    canvas,
+    0, 0, originalSize, originalSize,
+    padding * scale, padding * scale,
+    originalSize * scale, originalSize * scale
+  );
+
+  const dataUrl = paddedCanvas.toDataURL(
+    format === 'jpeg' ? 'image/jpeg' : 'image/png'
+  );
+
+>>>>>>> dcef9420473a351e6e959149e92d028635862392
   const a = document.createElement('a');
   a.href = dataUrl;
   a.download = `qr-code.${format}`;
@@ -241,6 +305,7 @@ function downloadQR() {
   document.body.removeChild(a);
 }
 
+<<<<<<< HEAD
 // Reset QR Code functionality
 document.getElementById('resetBtn').addEventListener('click', () => {
   // Clear QR code preview
@@ -267,3 +332,18 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   // Reset any URL or input state
   currentURL = '';
 });
+=======
+// Initial render
+renderInputs(currentType);
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+
+    hamburger.addEventListener('click', function () {
+      hamburger.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    });
+  });
+>>>>>>> dcef9420473a351e6e959149e92d028635862392
