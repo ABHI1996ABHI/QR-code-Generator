@@ -65,6 +65,46 @@ function updateCurrentQRDataFromTab(tabElement) {
   updateCurrentQRData(qrType, content);
 }
 
+// Count All Entries in qr_logs
+
+db.collection('qr_logs').get().then((querySnapshot) => {
+  console.log("Total entries:", querySnapshot.size);
+});
+
+// Count by Action Type (e.g. only qr_generated)
+
+db.collection('qr_logs')
+  .where('action', '==', 'qr_generated')
+  .get()
+  .then((querySnapshot) => {
+    console.log("QR Generated entries:", querySnapshot.size);
+  });
+
+  // Bonus: Count by QR Type (e.g. URL, PDF, etc.)
+
+  db.collection('qr_logs')
+  .where('qrType', '==', 'url')
+  .get()
+  .then((querySnapshot) => {
+    console.log("URL QR entries:", querySnapshot.size);
+  });
+
+  function getQRStats() {
+  db.collection('qr_logs').get().then((querySnapshot) => {
+    let totalGenerations = 0;
+    let totalDownloads = 0;
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.action === 'qr_generated') totalGenerations++;
+      if (data.action === 'qr_downloaded') totalDownloads++;
+    });
+
+    console.log("📊 Total QR Codes Generated:", totalGenerations);
+    console.log("📥 Total QR Codes Downloaded:", totalDownloads);
+  });
+}
+
 
 
 // Log QR Code Download
@@ -192,3 +232,5 @@ function getDailyStats(date) {
       return stats;
     });
 }
+
+
