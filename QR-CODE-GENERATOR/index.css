@@ -939,3 +939,21 @@ svg {
   outline: 2px solid #667eea;
   outline-offset: -2px;
 }
+
+/* Loogers */
+.logging-indicator {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #28a745;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  z-index: 1000;
+  display: none;
+}
+
+.logging-indicator.show {
+  display: block;
+}
