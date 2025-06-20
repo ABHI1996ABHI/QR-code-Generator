@@ -7,6 +7,13 @@
     <link href="Login.css" rel="stylesheet" >
 </head>
 <body>
+    <!-- Back to Homepage Button -->
+    <div class="back-to-home">
+        <button onclick="goToHomepage()" class="back-home-btn">
+            ← Back to Homepage
+        </button>
+    </div>
+
     <div class="container">
         <!-- Login Form -->
         <div id="loginForm" class="form-container active">
@@ -137,6 +144,11 @@
         window.browserLocalPersistence = browserLocalPersistence;
         window.browserSessionPersistence = browserSessionPersistence;
         window.signOut = signOut;
+
+        // Back to Homepage function
+        window.goToHomepage = function() {
+            window.location.href = HOME_PAGE_URL;
+        }
 
         // Helper Functions
         function showForm(formId) {
