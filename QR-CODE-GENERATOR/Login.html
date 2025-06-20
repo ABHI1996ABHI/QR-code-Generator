@@ -68,7 +68,7 @@
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="agreeTerms" required>
-                    <label for="agreeTerms">I agree to the <a href="http://127.0.0.1:5500/QR-CODE-GENERATOR/Termsandcondition.html" target="_blank">Terms and Conditions</a> and <a href="http://127.0.0.1:5500/QR-CODE-GENERATOR/Privacypolicy.html" target="_blank">Privacy Policy</a>.</label>
+                    <label for="agreeTerms">I agree to the <a href="termsandcondition.html" target="_blank">Terms and Conditions</a> and <a href="privacypolicy.html" target="_blank">Privacy Policy</a>.</label>
                 </div>
                 <button type="submit" class="submit-btn">Create Account</button>
             </form>
@@ -289,7 +289,7 @@
                 
                 setTimeout(() => {
                     console.log('Redirect to dashboard after Google login');
-                    // window.location.href = '/dashboard.html';
+                    window.location.href = 'https://thequickqr.com';
                 }, 1500);
             } catch (error) {
                 hideLoading();
@@ -378,7 +378,7 @@
             try {
                 await signOut(auth);
                 showNotification('Logged out successfully.', 'success');
-                // window.location.href = '/login.html';
+                window.location.href = 'https://thequickqr.com';
             } catch (error) {
                 console.error("Error signing out:", error);
                 showNotification('Logout failed. Please try again.', 'error');
