@@ -1,3 +1,22 @@
+// Add Firebase imports at the top of your file
+import { initializeApp } from 'firebase/app';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+// Your Firebase config
+const firebaseConfig = {
+  // Add your Firebase configuration here
+  apiKey: "your-api-key",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "your-app-id"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
+
 const qrInputs = document.getElementById('qrInputs');
 let currentType = 'url'; // default
 
@@ -46,66 +65,127 @@ function renderInputs(type) {
     case 'pdf':
       html = `
         <input type="file" id="pdfInput" class="form-control mb-3" accept="application/pdf">
-        <small class="text-muted">Select a PDF file to generate QR Code.</small>`;
+        <small class="text-muted">Select a PDF file to generate QR Code. File will be uploaded to Firebase Storage.</small>`;
       break;
   }
   qrInputs.innerHTML = html;
 }
 
-// Generate QR code
-function generateQR() {
-  let qrText = '';
-  switch (currentType) {
-    case 'url':
-      qrText = document.getElementById('urlInput').value.trim();
-      break;
-    case 'email':
-      const email = document.getElementById('emailInput').value.trim();
-      const subject = encodeURIComponent(document.getElementById('subjectInput').value.trim());
-      const body = encodeURIComponent(document.getElementById('bodyInput').value.trim());
-      qrText = `mailto:${email}?subject=${subject}&body=${body}`;
-      break;
-    case 'phone':
-      qrText = `tel:${document.getElementById('phoneInput').value.trim()}`;
-      break;
-    case 'sms':
-      const phone = document.getElementById('smsPhoneInput').value.trim();
-      const message = encodeURIComponent(document.getElementById('smsBodyInput').value.trim());
-      qrText = `SMSTO:${phone}:${message}`;
-      break;
-    case 'wifi':
-      const ssid = document.getElementById('ssidInput').value.trim();
-      const password = document.getElementById('passwordInput').value.trim();
-      const enc = document.getElementById('encryptionInput').value;
-      qrText = `WIFI:T:${enc};S:${ssid};P:${password};;`;
-      break;
-    case 'pdf':
-      const pdfFile = document.getElementById('pdfInput').files[0];
-      if (!pdfFile) return alert("Please upload a PDF file.");
-      const pdfUrl = URL.createObjectURL(pdfFile);
-      qrText = pdfUrl;
-      break;
+// Upload PDF to Firebase Storage
+async function uploadPDFToFirebase(file) {
+  try {
+    // Create a unique filename
+    const timestamp = Date.now();
+    const fileName = `pdfs/${timestamp}_${file.name}`;
+    
+    // Create a reference to Firebase Storage
+    const storageRef = ref(storage, fileName);
+    
+    // Upload the file
+    const snapshot = await uploadBytes(storageRef, file);
+    
+    // Get the download URL
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    
+    return downloadURL;
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw error;
   }
+}
 
-  if (!qrText) return alert("Please fill in the required fields!");
+// Generate QR code (Modified to handle PDF upload)
+async function generateQR() {
+  let qrText = '';
+  
+  // Show loader for PDF uploads
+  if (currentType === 'pdf') {
+    const loaderModal = new bootstrap.Modal(document.getElementById('loaderModal'));
+    loaderModal.show();
+  }
+  
+  try {
+    switch (currentType) {
+      case 'url':
+        qrText = document.getElementById('urlInput').value.trim();
+        break;
+      case 'email':
+        const email = document.getElementById('emailInput').value.trim();
+        const subject = encodeURIComponent(document.getElementById('subjectInput').value.trim());
+        const body = encodeURIComponent(document.getElementById('bodyInput').value.trim());
+        qrText = `mailto:${email}?subject=${subject}&body=${body}`;
+        break;
+      case 'phone':
+        qrText = `tel:${document.getElementById('phoneInput').value.trim()}`;
+        break;
+      case 'sms':
+        const phone = document.getElementById('smsPhoneInput').value.trim();
+        const message = encodeURIComponent(document.getElementById('smsBodyInput').value.trim());
+        qrText = `SMSTO:${phone}:${message}`;
+        break;
+      case 'wifi':
+        const ssid = document.getElementById('ssidInput').value.trim();
+        const password = document.getElementById('passwordInput').value.trim();
+        const enc = document.getElementById('encryptionInput').value;
+        qrText = `WIFI:T:${enc};S:${ssid};P:${password};;`;
+        break;
+      case 'pdf':
+        const pdfFile = document.getElementById('pdfInput').files[0];
+        if (!pdfFile) {
+          if (currentType === 'pdf') {
+            const loaderModal = bootstrap.Modal.getInstance(document.getElementById('loaderModal'));
+            loaderModal.hide();
+          }
+          return alert("Please upload a PDF file.");
+        }
+        
+        // Upload PDF to Firebase and get public URL
+        qrText = await uploadPDFToFirebase(pdfFile);
+        break;
+    }
 
-  const qrCodeContainer = document.getElementById('qrcode');
-  qrCodeContainer.innerHTML = '';
+    if (!qrText) {
+      if (currentType === 'pdf') {
+        const loaderModal = bootstrap.Modal.getInstance(document.getElementById('loaderModal'));
+        loaderModal.hide();
+      }
+      return alert("Please fill in the required fields!");
+    }
 
-  const loaderModal = new bootstrap.Modal(document.getElementById('loaderModal'));
-  loaderModal.show();
+    const qrCodeContainer = document.getElementById('qrcode');
+    qrCodeContainer.innerHTML = '';
 
-  setTimeout(() => {
-    new QRCode(qrCodeContainer, {
-      text: qrText,
-      width: 250,
-      height: 250,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H
-    });
-    loaderModal.hide();
-  }, 1000);
+    // Show loader for non-PDF types
+    if (currentType !== 'pdf') {
+      const loaderModal = new bootstrap.Modal(document.getElementById('loaderModal'));
+      loaderModal.show();
+    }
+
+    setTimeout(() => {
+      new QRCode(qrCodeContainer, {
+        text: qrText,
+        width: 250,
+        height: 250,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      
+      const loaderModal = bootstrap.Modal.getInstance(document.getElementById('loaderModal'));
+      if (loaderModal) {
+        loaderModal.hide();
+      }
+    }, currentType === 'pdf' ? 500 : 1000); // Shorter delay for PDF since upload already took time
+
+  } catch (error) {
+    console.error('Error generating QR code:', error);
+    alert('Error uploading PDF. Please try again.');
+    
+    const loaderModal = bootstrap.Modal.getInstance(document.getElementById('loaderModal'));
+    if (loaderModal) {
+      loaderModal.hide();
+    }
+  }
 }
 
 // Download with white margin, high resolution, and sharp quality
@@ -157,13 +237,12 @@ function downloadQR() {
 // Initial render
 renderInputs(currentType);
 
+document.addEventListener("DOMContentLoaded", function () {
+  const hamburger = document.getElementById('hamburger');
+  const navMenu = document.getElementById('nav-menu');
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('nav-menu');
-
-    hamburger.addEventListener('click', function () {
-      hamburger.classList.toggle('active');
-      navMenu.classList.toggle('active');
-    });
+  hamburger.addEventListener('click', function () {
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('active');
   });
+});
